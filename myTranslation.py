@@ -26,7 +26,7 @@ def infoOpen():
     global ref_x, ref_y
     file_flag = 0
     ### Bad coding practice, avoid using static addresses! Try using environment variables instead to prevent machine
-    ### specific errors:
+    ### specific errors!
     path_parent = os.getcwd()
     f_landmark = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                       "\\data_process\\park_lot_info\\landmark.txt", 'r')
@@ -390,7 +390,7 @@ def main(filename, cur_1, cur_2, cur_3, cur_4):
         cut = img[960:960 + height, 540:540 + width]
 
         # Write down the desired image
-        # Avoid using static addresses, try using environment variable instead
+        # Avoid using static addresses, try using environment variable instead!
         result_path = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\calib_image"     # Image save path
         name = os.path.splitext(filename)[0]    # Separate filename, remove the extension
         if case != -1:

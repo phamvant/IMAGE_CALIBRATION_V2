@@ -33,6 +33,7 @@ while True:
         else:
             print("_System now supervising parking lot automatically_")
             # Main program calls & execution
+            # Avoid using static address! Use environment variable for this instead!
             os.chdir("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\data")
             # Open landmarks information
             flag, ref_x, ref_y = myTrans.infoOpen()
