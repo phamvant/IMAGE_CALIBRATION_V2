@@ -24,7 +24,7 @@ for i in range(0, 5):
     ref_pos_x.append(0)
     ref_pos_y.append(0)
 
-for j in range (0, number_of_slot+1):
+for j in range(0, number_of_slot+1):
     slot_pos_x.append(0)
     slot_pos_y.append(0)
 
@@ -565,7 +565,7 @@ while True:
     # Testing layout change & direct accessing to available layouts
     if event == 'Cycle layout':
         window[f'lay_{layout}'].update(visible=False)
-        layout = layout + 1 if layout < 9 else 1
+        layout = layout + 1 if layout < 8 else 1
         window[f'lay_{layout}'].update(visible=True)
     elif event in '12345678':
         window[f'lay_{layout}'].update(visible=False)

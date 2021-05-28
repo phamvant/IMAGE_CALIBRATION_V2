@@ -47,8 +47,8 @@ def user_define(image):
         img = cv2.add(img, grid_img_fg)
 
         # Draw instruction box to the image
-        cv2.rectangle(image, (1480, 940), (1910, 1070), (255, 255, 255), -1)
-        cv2.rectangle(image, (1480, 940), (1910, 1070), (0, 127, 0), 3)
+        cv2.rectangle(img, (1480, 940), (1910, 1070), (255, 255, 255), -1)
+        cv2.rectangle(img, (1480, 940), (1910, 1070), (0, 127, 0), 3)
 
         text_01 = "Drag mouse over region of interest"
         text_02 = "Press M to save to Landmarks"
