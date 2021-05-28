@@ -22,14 +22,37 @@ for k in range(0, 5):  # Initiate above lists
     cur_y.append(0)
 
 # Open parking lot information files - landmark
-def infoOpen():
+def info_open_slot():
+    file_flag = 0
+    coord = []
+    f_slot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
+                  "data_process\\park_lot_info\\slot.txt", 'r')
+
+    if (os.stat("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
+                  "data_process\\park_lot_info\\slot.txt").st_size == 0):
+        # print('Landmark file has no value, please run Define Parking Slot')
+        file_flag = 1
+    else:
+        lis = [line.split() for line in f_slot]
+        n = len(lis[0])
+        fileLength = len(lis)
+
+        for j in range(n):
+            tempArray = []
+            for i in range(fileLength):
+                tempArray.append(int(lis[i][j]))
+            coord.append(tempArray)
+
+    return file_flag, coord
+
+def info_open():
     global ref_x, ref_y
     file_flag = 0
     ### Bad coding practice, avoid using static addresses! Try using environment variables instead to prevent machine
     ### specific errors!
     path_parent = os.getcwd()
     f_landmark = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-                      "\\data_process\\park_lot_info\\landmark.txt", 'r')
+                      "\\data_process\\park_lot_info\\landmark.txt", 'r+')
     if os.stat("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                       "\\data_process\\park_lot_info\\landmark.txt").st_size == 0:
         # print('Landmark file has no value, please run Define Parking Slot')
@@ -114,7 +137,7 @@ def landmark_recog(filename):
     return cur_1, cur_2, cur_3, cur_4   # Return available contour values
 
 # Translation & Rotation calibration function
-def main(filename, cur_1, cur_2, cur_3, cur_4):
+def main(trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
 
     # Switch case for translation/rotation properties, based on the number of landmarks found & check availability
     def case_switch_mode():
@@ -389,34 +412,59 @@ def main(filename, cur_1, cur_2, cur_3, cur_4):
         # Cut the desired image
         cut = img[960:960 + height, 540:540 + width]
 
+        # Drawing cutting slot
+        image_out = drawRectangle(cut, slot_coord)
+
         # Write down the desired image
         # Avoid using static addresses, try using environment variable instead!
         result_path = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\calib_image"     # Image save path
         name = os.path.splitext(filename)[0]    # Separate filename, remove the extension
+        cv2.imwrite(os.path.join(result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, trans_x, trans_y, angle)), image_out)
         if case != -1:
-            cv2.imwrite(os.path.join(result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, trans_x, trans_y, angle)), cut)
             print(filename, " recovered")
         else:
-            cv2.imwrite(os.path.join(result_path, 'not_recov_{}.jpg'.format(name)), cut)
+            # cv2.imwrite(os.path.join(result_path, 'not_recov_{}.jpg'.format(name)), cut)
             print(filename, " not recovered, please check the camera/input")
+
+
+    def drawRectangle(image, cd):
+        image_out = image
+        for i in range(0, 20):
+            if i in range(0, 8):
+                cv2.rectangle(image_out, (cd[1][i] - 75, cd[2][i] - 75), (cd[1][i] + 75, cd[2][i] + 75), (0, 255, 0), 2)
+            elif i in range(8, 14):
+                cv2.rectangle(image_out, (cd[1][i] - 45, cd[2][i] - 45), (cd[1][i] + 45, cd[2][i] + 45), (0, 255, 0), 2)
+            else:
+                cv2.rectangle(image_out, (cd[1][i] - 35, cd[2][i] - 35), (cd[1][i] + 35, cd[2][i] + 35), (0, 255, 0), 2)
+        return image_out
 
     # Connect functions
     image = cv2.imread(filename)
     run_fl, run_md, cur_togg = case_switch_mode()
     ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y = midpoint_cal(run_fl, run_md, cur_togg)
     r_case = run_case(run_fl, run_md, cur_togg)
+    slot_fileflag, slot_coord = info_open_slot()
     ### Debug code:
     print("Working case: ", r_case)
+    # print(ref_x)
+    # print(ref_y)
+    # print(cur_x)
+    # print(cur_y)
     # Zoom out image
     process_image = zoom_image(image)
     ### Both image translation and rotation calibration
-    rot_image, rotAngle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-    trans_image, transX, transY = translation(rot_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-    ### In case of running image translation calibration only:
-    # trans_image, transX, transY = translation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-    # rotAngle = 0
-    ### In case of running image rotation calibration only:
-    # transX = 0
-    # transY = 0
     # rot_image, rotAngle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-    save_image(trans_image, r_case, transX, transY, rotAngle)
+    # trans_image, transX, transY = translation(rot_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+    ### In case of running image translation calibration only:
+    if trans_rot_mode == 1:
+        trans_image, transX, transY = translation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+        rotAngle = 0
+
+        save_image(trans_image, r_case, transX, transY, rotAngle)
+    ### In case of running image rotation calibration only:
+    if trans_rot_mode == 2:
+        transX = 0
+        transY = 0
+        rot_image, rotAngle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+        save_image(rot_image, r_case, transX, transY, rotAngle)
+

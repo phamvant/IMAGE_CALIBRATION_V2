@@ -36,7 +36,7 @@ while True:
             # Avoid using static address! Use environment variable for this instead!
             os.chdir("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\data")
             # Open landmarks information
-            flag, ref_x, ref_y = myTrans.infoOpen()
+            flag, ref_x, ref_y = myTrans.info_open()
             ### Debug code:
             # print(flag)
             # print(ref_x)
@@ -44,6 +44,7 @@ while True:
             if flag == 1:
                 print("Parking lot is yet to be defined, exit")
             else:
+                trans_rot_mode = 1
                 ### Debug code:
                 # print(path_parent+"\\data_process\\data")
 
@@ -57,7 +58,7 @@ while True:
                     # cv2.waitKey()
 
                     cur1, cur2, cur3, cur4 = myTrans.landmark_recog(filename)
-                    myTrans.main(filename, cur1, cur2, cur3, cur4)
+                    myTrans.main(trans_rot_mode, filename, cur1, cur2, cur3, cur4)
                     print("")
 
             print("_System has finished monitoring. Now exit_")

@@ -1,111 +1,103 @@
 # This is the file containing test layout for ImageCalibration
 # The layout is in development
-
+### Import libraries/packages
+# ---------------------------------------------------------------------------------------------------------------------
 import os
 import io
-
+# Import required processing libraries/packages
 import PySimpleGUI as sg
 import ctypes
 import cv2
 
 from PIL import Image, ImageTk
-
+# Import image calibration algorithm file
 import myTranslation as mytrans
-
-# Initiate values
-index = 0
-ref_pos_x = []
-ref_pos_y = []
-slot_pos_x = []
-slot_pos_y = []
-number_of_slot = 20
-
-for i in range(0, 5):
-    ref_pos_x.append(0)
-    ref_pos_y.append(0)
-
-for j in range(0, number_of_slot+1):
-    slot_pos_x.append(0)
-    slot_pos_y.append(0)
-
-scale = 2 / 3
+# ---------------------------------------------------------------------------------------------------------------------
 
 
-# Get native screen resolution, times the ratio for comfortable resolution
+### Define additional functions:
+# ---------------------------------------------------------------------------------------------------------------------
+# Get native screen resolution, times the ratio for native compatible resolution, avoid bleeding edges
 def get_scr_size(ratio):
-    user32 = ctypes.windll.user32
-    scr_size = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+    user32 = ctypes.windll.user32                                       # ctypes function
+    scr_size = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)   # ctypes function, returns a list of parameters
     scr_width = scr_size[0]
     scr_height = scr_size[1]
-    width = int(scr_width * ratio)
-    height = int(scr_height * ratio)
+    width = int(scr_width * ratio)                                      # get width*ratio, for later GUI scaling
+    height = int(scr_height * ratio)                                    # get height*ratio, for later GUI scaling
 
     return width, height
 
-def gui_draw(filename):
+# Draw a grid on to the image, using an overlay image of grid
+# Could use an another approach, using PySimpleGUI graphing functions since images are shown on graph-based canvas
+def gui_draw(file_name):
     # Draw a guidance grid onto the image
-    image = cv2.imread(filename)
-
+    img = cv2.imread(file_name)
+    # Avoid using static addresses
+    # Use this instead, but be cautious :
+    # gridImg = cv2.imread(os.getcwd() + "\\data_process\\ref_image\\imGrid.png")
+    # Make sure the working files are in the right positions before use
     gridImg = cv2.imread("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot"
                          "\\IMAGE_CALIBRATION_V2\\data_process\\ref_image\\imGrid.png")
+    ### Debug: show Grid image
     # cv2.imshow("Image", gridImg)
     # cv2.waitKey()
 
     rows, cols, channel = gridImg.shape
-    roi = image[0:rows, 0:cols]
+    roi = img[0:rows, 0:cols]
 
+    # Add grid to the selected reference image
     img2gray = cv2.cvtColor(gridImg, cv2.COLOR_BGR2GRAY)
     ret, mask = cv2.threshold(img2gray, 200, 255, cv2.THRESH_BINARY_INV)
     mask_inv = cv2.bitwise_not(mask)
-    image = cv2.bitwise_and(roi, roi, mask=mask_inv)
+    img = cv2.bitwise_and(roi, roi, mask=mask_inv)
     gridImg_fg = cv2.bitwise_and(gridImg, gridImg, mask=mask)
-    image = cv2.add(image, gridImg_fg)
+    img = cv2.add(img, gridImg_fg)
 
+    # Get file name, write the image with grid. This will be used in later processing
     name = os.path.splitext(filename)[0]+"_grid.jpg"
+    # Avoid using static addresses
+    # Use this instead, but be cautious:
+    # file_path = os.path.join(os.getcwd()+"\\data_process\\ref_image", name)
     file_path = os.path.join("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot"
                              "\\IMAGE_CALIBRATION_V2\\data_process\\ref_image", name)
-    cv2.imwrite(file_path, image)
+    cv2.imwrite(file_path, img)
     return file_path
 
-wid, hght = get_scr_size(scale)
-maxsize = (wid, hght)
-
-# Define image files
-file_types = [("JPEG (*.jpg)", ".jpg"),
-              ("All files (*.*)", "*.*")]
-
-
-def get_img_data(f, maxsize, first=False):
-    # Generate image data?
+# Convert image data to base64 values, for later drawing on graph canvas
+def get_img_data(f, max_size, first=False):
     img = Image.open(f)
-    img.thumbnail(maxsize, resample=Image.BICUBIC)
+    img.thumbnail(max_size, resample=Image.BICUBIC)
     if first:
-        bio = io.BytesIO()
-        img.save(bio, format="PNG")
+        b_io = io.BytesIO()
+        img.save(b_io, format="PNG")
         del img
-        return bio.getvalue()
+        return b_io.getvalue()
     return ImageTk.PhotoImage(img)
 
-
+# Open available parking lot file, append positions to a list
 def file_open_avail_parklot():
     # Initiate values
     file_flag = 0
     avail_parklot = []
-    trans_rot_mode = 0
 
     # Open file contains defined parking lot name
+    # Avoid using static addresses
     f_avail_parklot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process"
                            "\\avail_parklot.txt", 'r+')
     if os.stat("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                "\\data_process\\avail_parklot.txt").st_size == 0:
-        file_flag = 1
+        # Indicates if the parking lot is defined or not. If not, halt the processing program
+        file_flag = 1                               # Not defined value
         avail_parklot = None
         return avail_parklot, file_flag
     else:
+        strx = ""
+        # Initiate new list, get the value from the list
         lis = [line.split() for line in f_avail_parklot]
         file_length = len(lis)
 
-        for i in range (file_length):
+        for i in range(file_length):
             for val in lis[i]:
                 strx = val
             avail_parklot.append(strx)
@@ -113,9 +105,12 @@ def file_open_avail_parklot():
 
     return avail_parklot, file_flag
 
+# Add new parking lot name to available parking lot, if that parking lot is yet to be defined
+# This function is sensitive to the text file's structure & last written position
+# Modify if needed
 def file_append_avail_parklot(new_parklot_name):
     # Initiate values:
-
+    # Avoid using static addresses
     f_avail_parklot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process"
                            "\\avail_parklot.txt", 'a+')
     f_avail_parklot.write("\n")
@@ -124,13 +119,14 @@ def file_append_avail_parklot(new_parklot_name):
 
     return 0
 
-def file_slot_write(slot_x, slot_y, number_of_slot):
+# Rewrite the parking lot's parking slots' positions
+def file_slot_write(slot_x, slot_y, num_of_slot):
     # Initiate values:
     slot_index = 0
     f_slot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                   "\\data_process\\park_lot_info\\slot.txt", 'w+')
     # Write slot coordinates to the file
-    for slot_index in range(1, number_of_slot+1):
+    for slot_index in range(1, num_of_slot+1):
         f_slot.write('%d ' % slot_index)
         f_slot.write('%d ' % slot_x[slot_index])
         f_slot.write('%d\n' % slot_y[slot_index])
@@ -139,8 +135,10 @@ def file_slot_write(slot_x, slot_y, number_of_slot):
 
     return 0
 
+# Rewrite the landmarks' positions
 def file_landmark_write(ref_x, ref_y):
     # Initiate values:
+    # Avoid using static addresses
     landmark_index = 0
     f_landmark = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                       "\\data_process\\park_lot_info\\landmark.txt", 'w+')
@@ -159,13 +157,56 @@ def file_landmark_write(ref_x, ref_y):
 
     return 0
 
+# Remove all folder content before an another run, to avoid image show errors
+def remove_folder_content(address):
+    for filename in os.listdir(address):
+        if os.path.exists(os.path.join(address, filename)):
+            os.remove(os.path.join(address, filename))
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+# Initiate values
+# ---------------------------------------------------------------------------------------------------------------------
+index = 0  # index for below lists - Reference landmark position list & Slot position list
+ref_pos_x = []  # Reference landmark coordinate, x-axis
+ref_pos_y = []  # Reference landmark coordinate, y-axis
+slot_pos_x = []  # Slot coordinate, x-axis
+slot_pos_y = []  # Slot coordinate, y-axis
+
+# Avoid using static values, try using an input to get this value
+number_of_slot = 20  # Define number of slots
+
+# Initiate above lists
+for i in range(0, 5):
+    ref_pos_x.append(0)
+    ref_pos_y.append(0)
+for j in range(0, number_of_slot + 1):
+    slot_pos_x.append(0)
+    slot_pos_y.append(0)
+
+# Screen scaling ratio. This value must < 1 to get a fullscreen GUI without bleeding edges
+scale = 2 / 3
+
+# Initiate screen size, get max GUI resolution
+wid, hght = get_scr_size(scale)
+maxsize = (wid, hght)
+
+# Define image files, which should be used in later definitions
+file_types = [("JPEG (*.jpg)", ".jpg"),
+              ("All files (*.*)", "*.*")]
+
 # Define a list, emulating reading different parking lot
 list_of_parking_lot, avail_flag = file_open_avail_parklot()
 size_of_list_parklot = len(list_of_parking_lot)
-for i in range(0, size_of_list_parklot):
-    print(list_of_parking_lot[i])
 
-# Define layouts
+### Debug: Available parking lots
+# for i in range(0, size_of_list_parklot):
+#    print(list_of_parking_lot[i])
+# ---------------------------------------------------------------------------------------------------------------------
+
+
+### Define layouts
+# ---------------------------------------------------------------------------------------------------------------------
 # Layout 1/layout_open
 layout_open = [[sg.Text('IMAGE CALIBRATION', font='Arial')],
                [sg.Button('Define new parking lot', key='-DEFNEW-')],
@@ -276,108 +317,125 @@ layout = [[sg.Column(layout_open, key='lay_1', element_justification='center'),
           [sg.Button('Cycle layout'), sg.Button('1'), sg.Button('2'), sg.Button('3'),
            sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8'),
            sg.Button('Exit')]]
+# ---------------------------------------------------------------------------------------------------------------------
 
+
+# GUI initiate values:
+# ---------------------------------------------------------------------------------------------------------------------
+# Initiate main window
 window = sg.Window('Image Calibration', layout, element_justification='center',
                    resizable=True, finalize=True)
+# Initiate layout
 layout = 1
-
+# Initiate additional graph value, for layout 6 & layout 8
 graph = window['-GRAPH-']
 before_calib = window['-BEFORE_CALIB-']
 after_calib = window['-AFTER_CALIB-']
+# Initiate index for image viewer, layout 8
 result_image_index = 0
-
+# Enable/Disable dragging variables, for drawing on graph
 dragging = False
 start_point = end_point = prior_rect = None
+# ---------------------------------------------------------------------------------------------------------------------
 
+
+# GUI switching functions
+# ---------------------------------------------------------------------------------------------------------------------
 while True:
-    # ---------------------------------------------------------------------------------------------
-    # Terminating program
+    # Terminate program
+    # ----------------------------------------------------------------------
     event, values = window.read()
     if event == sg.WIN_CLOSED or event == 'Exit' or event == '-CLOSE_PROG-':
         break
-    # ---------------------------------------------------------------------------------------------
-    # ---------------------------------------------------------------------------------------------
-    # Working with Back function
-    if event == ('-BACK_2-' or '-BACK_3-' or '-BACK_4-' or -'BACK_5-' or '-BACK_6-'):
-        window[f'lay_{layout}'].update(visible=False)
-        if layout == 2 or layout == 3:
-            layout = 1
-        elif layout == 4:
-            layout = 2
-        elif layout == 5:
-            layout = 4
-        elif layout == 6:
-            layout = 5
-        window[f'lay_{layout}'].update(visible=True)
-    # ---------------------------------------------------------------------------------------------
+    # ----------------------------------------------------------------------
 
-    # ---------------------------------------------------------------------------------------------
-    # Working with define new parking lot
-    if event == '-DEFNEW-':
+    # Work with Back function
+    # -----------------------------------------------------------------------------------------------------------------
+    if event == '-BACK_2-' or event == '-BACK_3-' or event == '-BACK_4-' or event == '-BACK_5-' or event == '-BACK_6-':
+        if layout == 2 or layout == 3 or layout == 4:
+            window[f'lay_{layout}'].update(visible=False)       # Toggle current layout off
+            layout = 1                                          # Update desired layout value
+            window[f'lay_{layout}'].update(visible=True)        # Toggle new layout on
+        elif layout == 5:
+            window[f'lay_{layout}'].update(visible=False)
+            layout = 4
+            window[f'lay_{layout}'].update(visible=True)
+        elif layout == 6:
+            window[f'lay_{layout}'].update(visible=False)
+            layout = 5
+            window[f'lay_{layout}'].update(visible=True)
+    # -----------------------------------------------------------------------------------------------------------------
+
+    # Work with define new parking lot
+    # -----------------------------------------------------------------------------------------------------------------
+    if event == '-DEFNEW-':                             # Change to enter new name layout
         window[f'lay_{layout}'].update(visible=False)
         layout = 2
         window[f'lay_{layout}'].update(visible=True)
 
-    if event == '-ENTER_NAME-':
+    if event == '-ENTER_NAME-':                         # If enter new name button is pressed
         match = 0
         parklot_name = values['-NEW_PARKLOT_NAME-']
         print(parklot_name)
-        if parklot_name == "":
-            window['-NAME_BLANK-'].update(visible=True)
-            window['-DEFINE_01-'].update(visible=False)
-            continue
-        for i in range(0, size_of_list_parklot):
+        if parklot_name == "":                          # Check if new name is blank. Blank name cannot be used
+            window['-NAME_BLANK-'].update(visible=True) # Blank name message, visible = True
+            window['-DEFINE_01-'].update(visible=False) # Next button, visible = False
+            continue                                    # Continue receiving new name
+
+        for i in range(0, size_of_list_parklot):        # Check if name is used, means parking lot is defined
             if parklot_name == list_of_parking_lot[i]:
-                match = 1
-        if match == 1:
-            window['-RET_MSG_DEFNEW1-'].update(visible=True)
-            parklot_name = list_of_parking_lot[i]
-            window['-REDEFINE_DEF-'].update(visible=True)
-            window['-RUN_DEF-'].update(visible=True)
-            window['-DEFINE_01-'].update(visible=False)
-            window['-NAME_BLANK-'].update(visible=False)
-        else:
-            window['-DEFINE_01-'].update(visible=True)
-            window['-REDEFINE_DEF-'].update(visible=False)
-            window['-RUN_DEF-'].update(visible=False)
-            window['-RET_MSG_DEFNEW1-'].update(visible=False)
-            window['-NAME_BLANK-'].update(visible=False)
-            file_append_avail_parklot(parklot_name)
+                match = 1                               # Found matching result!
+        if match == 1:         # Display Redefine, RunAuto option. Not append this new name since it's already available
+            window['-RET_MSG_DEFNEW1-'].update(visible=True)    # Matched name message, visible = True
+            parklot_name = list_of_parking_lot[i]               # Take the available name instead (Redundant?)
+            window['-REDEFINE_DEF-'].update(visible=True)       # Redefine button, visible = True
+            window['-RUN_DEF-'].update(visible=True)            # RunAuto button, visible = True
+            window['-DEFINE_01-'].update(visible=False)         # Next button, visible = False
+            window['-NAME_BLANK-'].update(visible=False)        # Blank name message, visible = False
+        else:                                            # No matching name found. This name need to be added
+            window['-DEFINE_01-'].update(visible=True)          # Next button, visible = True
+            window['-REDEFINE_DEF-'].update(visible=False)      # Redefine button, visible = False
+            window['-RUN_DEF-'].update(visible=False)           # RunAuto button , visible = False
+            window['-RET_MSG_DEFNEW1-'].update(visible=False)   # Matched name message, visble = False
+            window['-NAME_BLANK-'].update(visible=False)        # Blank name message, visible = False
+            file_append_avail_parklot(parklot_name)             # Append the new name to available parking lots
+    # -----------------------------------------------------------------------------------------------------------------
 
-
-    # ---------------------------------------------------------------------------------------------
-
-    # ---------------------------------------------------------------------------------------------
-    # Working with select reference image
+    # Work with select reference image
+    # -------------------------------------------------------------------------------------------------------
     if event == '-DEFINE_01-' or event == '-REDEFINE-' or event == '-REDEFINE_DEF-' or event == '-BACK2DEF-':
+    # If event wish to come/comeback to select reference image
         window[f'lay_{layout}'].update(visible=False)
         layout = 4
         window[f'lay_{layout}'].update(visible=True)
+        # Get the parking lot name
         if event == '-DEFINE_01-' or event == '-REDEFINE_DEF-':
+            ### Debug: Print parking lot name string
             # print(parklot_name)
             print("")
         else:
             strx = ""
             for v in values['-PARKLOT-']:
-                strx = v  # Extract the string from the list parentheses
+                strx = v                                # Extract the string from the list parentheses
             parklot_name = strx
             print(parklot_name)
 
+    # If event is load image, after selecting an available image
     if event == "Load image":
-        filename = values['-REFIMG-']
+        filename = values['-REFIMG-']   # Update image value
         # print(filename)
         # print(filename)
-        if os.path.exists(filename):
+        if os.path.exists(filename):    # Open image & show thumbnail before proceed to process
             image = Image.open(values['-REFIMG-'])
             image.thumbnail((500, 500))
             bio = io.BytesIO()
             image.save(bio, format="PNG")
-            window["-IMAGE-"].update(data=bio.getvalue())
-            window['-DEFINE_02-'].update(visible=True)
-    # ---------------------------------------------------------------------------------------------
+            window["-IMAGE-"].update(data=bio.getvalue())   # Show image
+            window['-DEFINE_02-'].update(visible=True)      # Next button, visible = True
+    # -----------------------------------------------------------------------------------------------------
 
-    # ---------------------------------------------------------------------------------------------
-    # Working with define landmark and parking slot
+    # Work with define landmark and parking slot
+    # -----------------------------------------------------------------------------------------------------
     if event == '-DEFINE_02-':
         print("Accessing landmark & parking slot mode")
         window[f'lay_{layout}'].update(visible=False)
@@ -434,15 +492,15 @@ while True:
     # Save changes to slot file
     if event == '-REDEF_SLOT-':
         file_slot_write(slot_pos_x, slot_pos_y, number_of_slot)
-    # ---------------------------------------------------------------------------------------------
+    # ------------------------------------------------------------------------------------------------------
 
-    # ---------------------------------------------------------------------------------------------
+    # -----------------------------------------------
     # Working with run automatically
     if event == '-RUNAUTO-':
         window[f'lay_{layout}'].update(visible=False)
         layout = 3
         window[f'lay_{layout}'].update(visible=True)
-    # ---------------------------------------------------------------------------------------------
+    # -----------------------------------------------
 
     # ---------------------------------------------------------------------------------------------
     # Working with select calibration mode
@@ -458,7 +516,9 @@ while True:
         window[f'lay_{layout}'].update(visible=False)
         layout = 7
         window[f'lay_{layout}'].update(visible=True)
-
+        write_address = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
+                        "\\data_process\\calib_image"
+        remove_folder_content(write_address)
         f_runtime = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
                          "\\data_process\\runTime.txt", 'r+')
         landmark_flag, ref_x, ref_y = mytrans.info_open()
@@ -561,8 +621,8 @@ while True:
         after_calib.draw_image(data=data_cab, location=(0, 0))
     # ---------------------------------------------------------------------------------------------
 
-    # ---------------------------------------------------------------------------------------------
-    # Testing layout change & direct accessing to available layouts
+    # Test layout change & direct accessing to available layouts
+    # ----------------------------------------------------------
     if event == 'Cycle layout':
         window[f'lay_{layout}'].update(visible=False)
         layout = layout + 1 if layout < 8 else 1
@@ -571,5 +631,5 @@ while True:
         window[f'lay_{layout}'].update(visible=False)
         layout = int(event)
         window[f'lay_{layout}'].update(visible=True)
-    # ---------------------------------------------------------------------------------------------
+    # -----------------------------------------------------------
 window.close()
