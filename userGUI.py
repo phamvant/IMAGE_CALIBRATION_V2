@@ -136,21 +136,21 @@ def file_slot_write(slot_x, slot_y, num_of_slot):
     return 0
 
 # Rewrite the landmarks' positions
-def file_landmark_write(ref_x, ref_y):
+def file_landmark_write(ref_xx, ref_yy):
     # Initiate values:
     # Avoid using static addresses
     landmark_index = 0
     f_landmark = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                       "\\data_process\\park_lot_info\\landmark.txt", 'w+')
-    f_runtime = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
+    f_runt = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
                      "\\data_process\\runTime.txt", 'w+')
     # Write value to the file
-    f_runtime.write('1')
+    f_runt.write('1')
     # Write landmark coordinates to the file
     for landmark_index in range(1, 5):
         f_landmark.write('%d ' % landmark_index)
-        f_landmark.write('%d ' % ref_x[landmark_index])
-        f_landmark.write('%d\n' % ref_y[landmark_index])
+        f_landmark.write('%d ' % ref_xx[landmark_index])
+        f_landmark.write('%d\n' % ref_yy[landmark_index])
 
     f_landmark.close()
     f_runtime.close()
@@ -199,6 +199,13 @@ file_types = [("JPEG (*.jpg)", ".jpg"),
 list_of_parking_lot, avail_flag = file_open_avail_parklot()
 size_of_list_parklot = len(list_of_parking_lot)
 
+# Image calibration folders
+# Avoid using static addresses
+folder_original = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
+                  "\\data_process\\data"
+folder_calibrated = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
+                    "\\data_process\\calib_image"
+
 ### Debug: Available parking lots
 # for i in range(0, size_of_list_parklot):
 #    print(list_of_parking_lot[i])
@@ -207,12 +214,12 @@ size_of_list_parklot = len(list_of_parking_lot)
 
 ### Define layouts
 # ---------------------------------------------------------------------------------------------------------------------
-# Layout 1/layout_open
+# Layout 1/layout_open: Opening layout of the program
 layout_open = [[sg.Text('IMAGE CALIBRATION', font='Arial')],
                [sg.Button('Define new parking lot', key='-DEFNEW-')],
                [sg.Button('Run automatically', key='-RUNAUTO-')]]
 
-# Layout 2/layout_defnew_1
+# Layout 2/layout_defnew_1: Define new parking lot name layout
 layout_defnew_1 = [[sg.Text('DEFINE NEW PARKING LOT')],
                    [sg.Text('Please input new parking lot name')],
                    [sg.InputText(key='-NEW_PARKLOT_NAME-')],
@@ -226,14 +233,14 @@ layout_defnew_1 = [[sg.Text('DEFINE NEW PARKING LOT')],
                     sg.Button('Run auto', key='-RUN_DEF-', visible=False)]
                    ]
 
-# Layout 3/layout_runauto_1
+# Layout 3/layout_runauto_1: Select defined parking lot layout
 layout_runauto_1 = [[sg.Text("RUN CALIBRATING AUTOMATICALLY")],
                     [sg.Text("Select one of these defined parking lot")],
                     [sg.Listbox(values=list_of_parking_lot, select_mode='single', key='-PARKLOT-', size=(30, 6))],
                     [sg.Button('Back', key='-BACK_3-'),
                      sg.Button('Redefine', key='-REDEFINE-'), sg.Button('Run auto', key='-RUN-')]]
 
-# Layout 4/layout_defnew_2
+# Layout 4/layout_defnew_2: Select reference image layout
 layout_defnew_2 = [[sg.Text('DEFINE PARKING LOT')],
                    [sg.Text('Select reference image')],
                    [sg.Text('Choose a file: '), sg.Input(size=(30, 1), key='-REFIMG-'),
@@ -242,8 +249,8 @@ layout_defnew_2 = [[sg.Text('DEFINE PARKING LOT')],
                    [sg.Image(key="-IMAGE-")],
                    [sg.Button('Back', key='-BACK_4-'), sg.Button('Next', key='-DEFINE_02-', visible=False)]]
 
-# Layout 5/layout_defnew3:
-layout_1 = [[sg.Graph(canvas_size=(wid, hght),
+# Layout 5/layout_defnew3: Define landmarks & parking slots layout
+layout_1 = [[sg.Graph(canvas_size=(wid, hght),              # First column
                       graph_bottom_left=(0, 720),
                       graph_top_right=(1280, 0),
                       enable_events=True,
@@ -256,22 +263,22 @@ layout_1 = [[sg.Graph(canvas_size=(wid, hght),
              sg.Button("Save PSlot file", key='-REDEF_SLOT-', visible=False)],
             [sg.Button('Back', key='-BACK_5-'), sg.Button('Finish', key='-FIN-')]]
 
-layout_2 = [[sg.Text(key='-INFO-', size=(50, 1))],
+layout_2 = [[sg.Text(key='-INFO-', size=(50, 1))],          # Second column
             [sg.Text(key='-LM_1-', size=(30, 1))],
             [sg.Text(key='-LM_2-', size=(30, 1))],
             [sg.Text(key='-LM_3-', size=(30, 1))],
             [sg.Text(key='-LM_4-', size=(30, 1))]]
 
-layout_defnew_3 = [[sg.Text('DEFINE PARKING LOT')],
+layout_defnew_3 = [[sg.Text('DEFINE PARKING LOT')],         # Master layout of layout 5, combine 1st and 2nd column
                    [sg.Text('Define landmarks & parking slots')],
                    [sg.Column(layout_1), sg.Column(layout_2)]]
 
-# Layout 6/layout_select_calib_mode
+# Layout 6/layout_select_calib_mode: Select calibration mode
 layout_select_calib_mode = [[sg.Text("SELECT CALIBRATION TYPE")],
                  [sg.Button('Translation', key='-TRANS-'), sg.Button('Rotation', key='-ROL-')],
                  [sg.Button('Back', key='-BACK_6-')]]
 
-# Layout 7/layout_wait_error
+# Layout 7/layout_wait_error: Wait screen/Error screen layout
 layout_wait_error = [[sg.Text("WAIT SCREEN")],
                      [sg.Text("Parking lot has not been defined, please define before run", key='-NOT_DEF-',
                               visible=False)],
@@ -282,8 +289,8 @@ layout_wait_error = [[sg.Text("WAIT SCREEN")],
                      [sg.Text("Program finished monitoring", key='-FINISHED-', visible=False)],
                      [sg.Button("Show result", key='-SHOW_RES-', visible=False)]]
 
-# Layout 8/layout_results
-result_col_1 = [[sg.Text("Before calibration")],
+# Layout 8/layout_results: Result layout - Image viewer
+result_col_1 = [[sg.Text("Before calibration")],        # First column
                 [sg.Graph(canvas_size=(640, 360),
                           graph_bottom_left=(0, 360),
                           graph_top_right=(640, 0),
@@ -291,7 +298,7 @@ result_col_1 = [[sg.Text("Before calibration")],
                           enable_events=True,
                           key='-BEFORE_CALIB-')]]
 
-result_col_2 = [[sg.Text("After calibration")],
+result_col_2 = [[sg.Text("After calibration")],         # Second column
                 [sg.Graph(canvas_size=(640, 360),
                           graph_bottom_left=(0, 360),
                           graph_top_right=(640, 0),
@@ -299,13 +306,13 @@ result_col_2 = [[sg.Text("After calibration")],
                           enable_events=True,
                           key='-AFTER_CALIB-')]]
 
-layout_result = [[sg.Text("RESULTS")],
+layout_result = [[sg.Text("RESULTS")],                  # Master layout of layout 8, combine 1st and 2nd column
                  [sg.Text("Before and After Calibration")],
                  [sg.Column(result_col_1), sg.Column(result_col_2)],
                  [sg.Button("Prev Image", key='-PREV_IMG-'), sg.Button("Next Image", key='-NEXT_IMG-')],
                  [sg.Button("Back to define", key='-BACK2DEF-'), sg.Button("Close the program", key='-CLOSE_PROG-')]]
 
-# Total layout to main program
+# Master layout of the program: Combining above layouts & navigate buttons
 layout = [[sg.Column(layout_open, key='lay_1', element_justification='center'),
            sg.Column(layout_defnew_1, visible=False, key='lay_2'),
            sg.Column(layout_runauto_1, visible=False, key='lay_3'),
@@ -370,21 +377,21 @@ while True:
     # -----------------------------------------------------------------------------------------------------------------
     if event == '-DEFNEW-':                             # Change to enter new name layout
         window[f'lay_{layout}'].update(visible=False)
-        layout = 2
+        layout = 2                                      # Update define new name layout
         window[f'lay_{layout}'].update(visible=True)
 
     if event == '-ENTER_NAME-':                         # If enter new name button is pressed
         match = 0
         parklot_name = values['-NEW_PARKLOT_NAME-']
         print(parklot_name)
-        if parklot_name == "":                          # Check if new name is blank. Blank name cannot be used
-            window['-NAME_BLANK-'].update(visible=True) # Blank name message, visible = True
-            window['-DEFINE_01-'].update(visible=False) # Next button, visible = False
-            continue                                    # Continue receiving new name
+        if parklot_name == "":                           # Check if new name is blank. Blank name cannot be used
+            window['-NAME_BLANK-'].update(visible=True)  # Blank name message, visible = True
+            window['-DEFINE_01-'].update(visible=False)  # Next button, visible = False
+            continue                                     # Continue receiving new name
 
-        for i in range(0, size_of_list_parklot):        # Check if name is used, means parking lot is defined
+        for i in range(0, size_of_list_parklot):         # Check if name is used, means parking lot is defined
             if parklot_name == list_of_parking_lot[i]:
-                match = 1                               # Found matching result!
+                match = 1                                # Found matching result!
         if match == 1:         # Display Redefine, RunAuto option. Not append this new name since it's already available
             window['-RET_MSG_DEFNEW1-'].update(visible=True)    # Matched name message, visible = True
             parklot_name = list_of_parking_lot[i]               # Take the available name instead (Redundant?)
@@ -392,7 +399,7 @@ while True:
             window['-RUN_DEF-'].update(visible=True)            # RunAuto button, visible = True
             window['-DEFINE_01-'].update(visible=False)         # Next button, visible = False
             window['-NAME_BLANK-'].update(visible=False)        # Blank name message, visible = False
-        else:                                            # No matching name found. This name need to be added
+        else:                                             # No matching name found. This name need to be added
             window['-DEFINE_01-'].update(visible=True)          # Next button, visible = True
             window['-REDEFINE_DEF-'].update(visible=False)      # Redefine button, visible = False
             window['-RUN_DEF-'].update(visible=False)           # RunAuto button , visible = False
@@ -406,7 +413,7 @@ while True:
     if event == '-DEFINE_01-' or event == '-REDEFINE-' or event == '-REDEFINE_DEF-' or event == '-BACK2DEF-':
     # If event wish to come/comeback to select reference image
         window[f'lay_{layout}'].update(visible=False)
-        layout = 4
+        layout = 4                                  # Update select image layout
         window[f'lay_{layout}'].update(visible=True)
         # Get the parking lot name
         if event == '-DEFINE_01-' or event == '-REDEFINE_DEF-':
@@ -437,39 +444,44 @@ while True:
     # Work with define landmark and parking slot
     # --------------------------------------------------------------------------------------
     if event == '-DEFINE_02-':
-        print("Accessing landmark & parking slot mode")
+    # If event is input image for parking lot defining
+        ### Debug:
+        # print("Accessing landmark & parking slot mode")
         window[f'lay_{layout}'].update(visible=False)
-        layout = 5
+        layout = 5                                              # Update landmark & slot define layout
         window[f'lay_{layout}'].update(visible=True)
-        grid_drawn = gui_draw(filename)
-        data = get_img_data(grid_drawn, maxsize, first=True)
-        graph.draw_image(data=data, location=(0, 0))
+        grid_drawn = gui_draw(filename)                         # Draw grid on selected image
+        data = get_img_data(grid_drawn, maxsize, first=True)    # Convert reference image data to base64
+        graph.draw_image(data=data, location=(0, 0))            # Draw image to grid, layout 5
 
+    # Define actions on graph
     if event == '-GRAPH-':
-        x, y = values['-GRAPH-']
-        if not dragging:
-            start_point = (x, y)
+        x, y = values['-GRAPH-']                                # Get coordinate from mouse on graph
+        if not dragging:                                        # If drag = False
+            start_point = (x, y)                                # Get starting point
             dragging = True
         else:
-            end_point = (x, y)
+            end_point = (x, y)                                  # Get ending point
         if prior_rect:
-            graph.delete_figure(prior_rect)
-        if None not in (start_point, end_point):
+            graph.delete_figure(prior_rect)                     #  Delete previous selected zone
+        if None not in (start_point, end_point):                # ?
             prior_rect = graph.draw_rectangle(start_point, end_point, line_color='blue')
-    elif event.endswith('+UP'):
-        info = window['-INFO-']
+    elif event.endswith('+UP'):                                 # If mouse is released
+        info = window['-INFO-']                                 # Update information on image (rectangle)
         info.update(value=f"Selected rectangle from {start_point} to {end_point}")
-        dragging = False
+        dragging = False                                        # Set drag to false, ready for an another action
 
+    # Define actions on saving information. Calculate using grabbed coordinates, revert to original scale
     if event == '-SAVE_LM-':
-        if values['-LM_NUM-'] == "":
-            index = 0
+        if values['-LM_NUM-'] == "":                # Save landmark information, but landmark number is not defined
+            index = 0                               # Save in the first slot, as a dummy value
             ref_pos_x[index] = int((start_point[0] + end_point[0]) / 2 / scale)
             ref_pos_y[index] = int((start_point[1] + end_point[1]) / 2 / scale)
         else:
-            index = int(values['-LM_NUM-'])
+            index = int(values['-LM_NUM-'])         # Save landmark information, save to the -LM_NUM- position
             ref_pos_x[index] = int((start_point[0] + end_point[0]) / 2 / scale)
             ref_pos_y[index] = int((start_point[1] + end_point[1]) / 2 / scale)
+            # Show saved data to the screen
             window['-LM_1-'].update(value=f"Landmark 01: {ref_pos_x[1]}, {ref_pos_y[1]}")
             window['-LM_2-'].update(value=f"Landmark 02: {ref_pos_x[2]}, {ref_pos_y[2]}")
             window['-LM_3-'].update(value=f"Landmark 03: {ref_pos_x[3]}, {ref_pos_y[3]}")
@@ -477,81 +489,93 @@ while True:
             # print(ref_pos_x)
             # print(ref_pos_y)
 
+    # Define actions on saving slots. Calculate using grabbed coordinates, revert to original scale
     if event == '-SAVE_SLOT-':
-        if values['-SLOT_NUM-'] == "":
-            index = 0
+        if values['-SLOT_NUM-'] == "":              # Save slot information, but slot number is not defined
+            index = 0                               # Save in the first slot, as a dummy value
             slot_pos_x[index] = int((start_point[0] + end_point[0]) / 2 / scale)
             slot_pos_y[index] = int((start_point[1] + end_point[1]) / 2 / scale)
         else:
-            index = int(values['-SLOT_NUM-'])
+            index = int(values['-SLOT_NUM-'])       # Save slot information, save to the -SLOT_NUM- position
             slot_pos_x[index] = int((start_point[0] + end_point[0]) / 2 / scale)
             slot_pos_y[index] = int((start_point[1] + end_point[1]) / 2 / scale)
             # print(slot_pos_x)
             # print(slot_pos_y)
 
-    # Save changes to slot file
+    # Save changes to slot file, if redefine slot button is pressed
     if event == '-REDEF_SLOT-':
         file_slot_write(slot_pos_x, slot_pos_y, number_of_slot)
     # ---------------------------------------------------------------------------------------
 
+    # Work with run automatically
     # -----------------------------------------------
-    # Working with run automatically
     if event == '-RUNAUTO-':
         window[f'lay_{layout}'].update(visible=False)
-        layout = 3
+        layout = 3                                  # Update select defined parking lot layout
         window[f'lay_{layout}'].update(visible=True)
     # -----------------------------------------------
 
+    # Work with select calibration mode
     # ---------------------------------------------------------------------------------------------
-    # Working with select calibration mode
     if event == '-RUN-' or event == '-RUN_DEF-' or event == '-FIN-':
-        if event == '-FIN-':
+        if event == '-FIN-':                         # Save the landmark information to landmark file
             file_landmark_write(ref_pos_x, ref_pos_y)
+
         print("Accessing running mode, return the results")
         window[f'lay_{layout}'].update(visible=False)
-        layout = 6
+        layout = 6                                  # Update select calibration mode layout
         window[f'lay_{layout}'].update(visible=True)
 
+    # Switch between 2 types of calibration: Translation & Rotation
     if event == '-TRANS-' or event == '-ROL-':
         window[f'lay_{layout}'].update(visible=False)
-        layout = 7
+        layout = 7                                  # Update waiting layout
         window[f'lay_{layout}'].update(visible=True)
+        # Avoid using static addresses
+        # Remove all files in the previous run. This function should be removed in future updates or refurbished for a
+        # better experience
         write_address = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
                         "\\data_process\\calib_image"
         remove_folder_content(write_address)
+        # Open runtime file, check if the parking lot is actually defined
         f_runtime = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
                          "\\data_process\\runTime.txt", 'r+')
+        # Actual image calibrating
         landmark_flag, ref_x, ref_y = mytrans.info_open()
         checkdef = f_runtime.read()
-        progress_bar = window.FindElement('-PROG_BAR-')
-        if checkdef == '0' or landmark_flag == 1:
-            window['-NOT_DEF-'].update(visible=True)
-            window['-WAIT-'].update(visible=False)
+        progress_bar = window.FindElement('-PROG_BAR-')         # Define loading bar
+        if checkdef == '0' or landmark_flag == 1:               # The parking lot is not defined. Redefine required!
+            window['-NOT_DEF-'].update(visible=True)            # Not defined message, visible = True
+            window['-WAIT-'].update(visible=False)              # Wait for processing message, visible = False
         else:
-            window['-NOT_DEF-'].update(visible=False)
-            window['-WAIT-'].update(visible=True)
+            window['-NOT_DEF-'].update(visible=False)           # Not defined message, visible = False
+            window['-WAIT-'].update(visible=True)               # Wait for processing message, visible = True
+            # Change to data need calibration folder
             os.chdir("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\data")
-            number_of_file = 0
-            run_var = 0
+            number_of_file = 0                                  # Initiate the number of data files need calibration
+            run_var = 0                                         # Running variable for loading bar
             for base, dirs, files in os.walk(os.getcwd()):
                 for Files in files:
-                    number_of_file = number_of_file + 1
+                    number_of_file = number_of_file + 1         # Get the number of data files need calibration
             if event == '-TRANS-':
-                trans_rot_mode = 1
+                trans_rot_mode = 1                              # Use Translation only
                 for filename in os.listdir(os.getcwd()):
                     image = cv2.imread(filename)
+                    # Update which file is being processed
                     window['-PROCESSING_FILE-'].update(value=f"{filename} processing")
                     window['-PROCESSING_FILE-'].update(visible=True)
+                    # Image calibration
                     cur1, cur2, cur3, cur4 = mytrans.landmark_recog(filename)
+                    # Print debug values
                     print(cur1, cur2, cur3, cur4)
                     print("")
                     mytrans.main(trans_rot_mode, filename, cur1, cur2, cur3, cur4)
                     run_var = run_var + 1
-                    progress_bar.UpdateBar(run_var, number_of_file)
-                window['-FINISHED-'].update(visible=True)
-                window['-SHOW_RES-'].update(visible=True)
+                    progress_bar.UpdateBar(run_var, number_of_file)     # Update loading bar
+                window['-FINISHED-'].update(visible=True)               # Finished message, visible = True
+                window['-SHOW_RES-'].update(visible=True)               # Show result button, visible = True
             elif event == '-ROL-':
-                trans_rot_mode = 2
+                trans_rot_mode = 2                              # Use Rotation only
                 for filename in os.listdir(os.getcwd()):
                     image = cv2.imread(filename)
                     window['-PROCESSING_FILE-'].update(value=f"{filename} processing")
@@ -559,32 +583,30 @@ while True:
                     cur1, cur2, cur3, cur4 = mytrans.landmark_recog(filename)
                     mytrans.main(trans_rot_mode, filename, cur1, cur2, cur3, cur4)
                     run_var = run_var + 1
-                    progress_bar.UpdateBar(run_var, number_of_file)
-                window['-FINISHED-'].update(visible=True)
-                window['-SHOW_RES-'].update(visible=True)
+                    progress_bar.UpdateBar(run_var, number_of_file)     # Update loading bar
+                window['-FINISHED-'].update(visible=True)               # Finished message, visible = True
+                window['-SHOW_RES-'].update(visible=True)               # Show result button, visible = True
     # ---------------------------------------------------------------------------------------------
 
+    # Work with showing results
     # ---------------------------------------------------------------------------------------------
-    # Working with showing results
     if event == '-SHOW_RES-':
+        result_image_index = 0                          # Reset image index to 0
         window[f'lay_{layout}'].update(visible=False)
-        layout = 8
+        layout = 8                                      # Update image viewer layout
         window[f'lay_{layout}'].update(visible=True)
 
         # Get a list of file names available
-        folder_original = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
-                          "\\data_process\\data"
-        folder_calibrated = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
-                            "\\data_process\\calib_image"
-        flist_o = os.listdir(folder_original)
-        flist_c = os.listdir(folder_calibrated)
-        fnames_o = [f for f in flist_o if os.path.isfile(
-            os.path.join(folder_original, f))]
-        numfiles_o = len(fnames_o)
-        fnames_c = [g for g in flist_c if os.path.isfile(
-            os.path.join(folder_calibrated, g))]
-        numfiles_c = len(fnames_c)
-        del flist_o, flist_c
+        # Define image viewer function
+        flist_o = os.listdir(folder_original)           # Get list of original images
+        flist_c = os.listdir(folder_calibrated)         # Get list of calibrated images
+        # Get list of names, original images
+        fnames_o = [f for f in flist_o if os.path.isfile(os.path.join(folder_original, f))]
+        numfiles_o = len(fnames_o)                      # Get number of original images
+        # Get list of names, calibration images
+        fnames_c = [g for g in flist_c if os.path.isfile(os.path.join(folder_calibrated, g))]
+        numfiles_c = len(fnames_c)                      # Get number of calibrated images
+        del flist_o, flist_c                            # Remove lists of names, since it's unused
         # End of getting list
 
         # Grab the first image
@@ -594,17 +616,17 @@ while True:
 
         # Show the first images:
         data_og = get_img_data(filename_og, (640, 360), first=True)
-        before_calib.draw_image(data=data_og, location=(0, 0))
+        before_calib.draw_image(data=data_og, location=(0, 0))          # Draw image to left graph, image viewer
         data_cab = get_img_data(filename_cab, (640, 360), first=True)
-        after_calib.draw_image(data=data_cab, location=(0, 0))
+        after_calib.draw_image(data=data_cab, location=(0, 0))          # Draw image to right graph, image viewer
 
     # Image scrolling
     if event in ('-PREV_IMG-', '-NEXT_IMG-'):
-        if event == '-PREV_IMG-':
+        if event == '-PREV_IMG-':                                       # Previous function in image viewer
             result_image_index = result_image_index - 1
             if result_image_index < 0:
                 result_image_index = numfiles_o + result_image_index
-        elif event == '-NEXT_IMG-':
+        elif event == '-NEXT_IMG-':                                     # Next function in image viewer
             result_image_index = result_image_index + 1
             if result_image_index >= numfiles_o:
                 result_image_index = result_image_index - numfiles_o
@@ -616,9 +638,9 @@ while True:
 
         # Show the images:
         data_og = get_img_data(filename_og, (640, 360), first=True)
-        before_calib.draw_image(data=data_og, location=(0, 0))
+        before_calib.draw_image(data=data_og, location=(0, 0))          # Draw image to left graph, image viewer
         data_cab = get_img_data(filename_cab, (640, 360), first=True)
-        after_calib.draw_image(data=data_cab, location=(0, 0))
+        after_calib.draw_image(data=data_cab, location=(0, 0))          # Draw image to right graph, image viewer
     # ---------------------------------------------------------------------------------------------
 
     # Test layout change & direct accessing to available layouts
