@@ -6,6 +6,12 @@ import imutils
 
 # Define my image calibration algorithm
 
+# Get parent path
+parent_path = os.getcwd()
+
+### Debug: get Parent path
+# print(parent_path)
+
 # Initiate threshold values, for later image processing (contour recognition based on color)
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
@@ -22,14 +28,12 @@ for k in range(0, 5):  # Initiate above lists
     cur_y.append(0)
 
 # Open parking lot information files - landmark
-def info_open_slot():
+def info_open_slot(park_lot_name):
     file_flag = 0
     coord = []
-    f_slot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
-                  "data_process\\park_lot_info\\slot.txt", 'r')
+    f_slot = open(parent_path + "\\data_process\\{}\\park_lot_info\\slot.txt".format(park_lot_name), 'r')
 
-    if (os.stat("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
-                  "data_process\\park_lot_info\\slot.txt").st_size == 0):
+    if os.stat(parent_path + "\\data_process\\{}\\park_lot_info\\slot.txt".format(park_lot_name)).st_size == 0:
         # print('Landmark file has no value, please run Define Parking Slot')
         file_flag = 1
     else:
@@ -45,16 +49,13 @@ def info_open_slot():
 
     return file_flag, coord
 
-def info_open():
+def info_open(park_lot_name):
     global ref_x, ref_y
     file_flag = 0
     ### Bad coding practice, avoid using static addresses! Try using environment variables instead to prevent machine
     ### specific errors!
-    path_parent = os.getcwd()
-    f_landmark = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-                      "\\data_process\\park_lot_info\\landmark.txt", 'r+')
-    if os.stat("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-                      "\\data_process\\park_lot_info\\landmark.txt").st_size == 0:
+    f_landmark = open(parent_path + "\\data_process\\{}\\park_lot_info\\landmark.txt".format(park_lot_name), 'r+')
+    if os.stat(parent_path + "\\data_process\\{}\\park_lot_info\\landmark.txt".format(park_lot_name)).st_size == 0:
         # print('Landmark file has no value, please run Define Parking Slot')
         file_flag = 1
     else:
@@ -137,7 +138,7 @@ def landmark_recog(filename):
     return cur_1, cur_2, cur_3, cur_4   # Return available contour values
 
 # Translation & Rotation calibration function
-def main(trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
+def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
 
     # Switch case for translation/rotation properties, based on the number of landmarks found & check availability
     def case_switch_mode():
@@ -417,14 +418,21 @@ def main(trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
 
         # Write down the desired image
         # Avoid using static addresses, try using environment variable instead!
-        result_path = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\calib_image"     # Image save path
+        result_path = parent_path + "\\data_process\\{}\\calib_image".format(park_lot_name)     # Image save path
         name = os.path.splitext(filename)[0]    # Separate filename, remove the extension
         cv2.imwrite(os.path.join(result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, trans_x, trans_y, angle)), image_out)
+        # Log debug information
+        f_debug = open(parent_path + "\\data_process\\{}\\debug.txt".format(park_lot_name), 'a+')
+        f_debug.write("Filename: {}\n".format(name))
+        f_debug.write("Working case: {}\n".format(case))
         if case != -1:
             print(filename, " recovered")
+            f_debug.write(filename + " recovered\n")
         else:
             # cv2.imwrite(os.path.join(result_path, 'not_recov_{}.jpg'.format(name)), cut)
             print(filename, " not recovered, please check the camera/input")
+            f_debug.write(filename + " not recovered, please check the camera/input\n")
+        f_debug.write("\n")
 
 
     def drawRectangle(image, cd):
@@ -439,13 +447,16 @@ def main(trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         return image_out
 
     # Connect functions
+    f_debug = open(parent_path + "\\data_process\\debug.txt", 'a+')
+    f_debug.write("\n")
+
     image = cv2.imread(filename)
     run_fl, run_md, cur_togg = case_switch_mode()
     ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y = midpoint_cal(run_fl, run_md, cur_togg)
     r_case = run_case(run_fl, run_md, cur_togg)
-    slot_fileflag, slot_coord = info_open_slot()
+    slot_fileflag, slot_coord = info_open_slot(park_lot_name)
     ### Debug code:
-    print("Working case: ", r_case)
+    print("Working case:", r_case)
     # print(ref_x)
     # print(ref_y)
     # print(cur_x)

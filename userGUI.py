@@ -12,6 +12,8 @@ import cv2
 from PIL import Image, ImageTk
 # Import image calibration algorithm file
 import myTranslation as mytrans
+# Import folder & file manipulation functions
+import folderFileManip as ff_manip
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -37,8 +39,7 @@ def gui_draw(file_name):
     # Use this instead, but be cautious :
     # gridImg = cv2.imread(os.getcwd() + "\\data_process\\ref_image\\imGrid.png")
     # Make sure the working files are in the right positions before use
-    gridImg = cv2.imread("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot"
-                         "\\IMAGE_CALIBRATION_V2\\data_process\\ref_image\\imGrid.png")
+    gridImg = cv2.imread(parent_path + "\\data_process\\grid_img\\imGrid.png")
     ### Debug: show Grid image
     # cv2.imshow("Image", gridImg)
     # cv2.waitKey()
@@ -59,8 +60,7 @@ def gui_draw(file_name):
     # Avoid using static addresses
     # Use this instead, but be cautious:
     # file_path = os.path.join(os.getcwd()+"\\data_process\\ref_image", name)
-    file_path = os.path.join("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot"
-                             "\\IMAGE_CALIBRATION_V2\\data_process\\ref_image", name)
+    file_path = os.path.join(os.getcwd() + "\\data_process\\ref_image", name)
     cv2.imwrite(file_path, img)
     return file_path
 
@@ -83,10 +83,8 @@ def file_open_avail_parklot():
 
     # Open file contains defined parking lot name
     # Avoid using static addresses
-    f_avail_parklot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process"
-                           "\\avail_parklot.txt", 'r+')
-    if os.stat("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-               "\\data_process\\avail_parklot.txt").st_size == 0:
+    f_avail_parklot = open(os.getcwd() + "\\data_process\\avail_parklot.txt", 'r+')
+    if os.stat(os.getcwd() + "\\data_process\\avail_parklot.txt").st_size == 0:
         # Indicates if the parking lot is defined or not. If not, halt the processing program
         file_flag = 1                               # Not defined value
         avail_parklot = None
@@ -111,8 +109,7 @@ def file_open_avail_parklot():
 def file_append_avail_parklot(new_parklot_name):
     # Initiate values:
     # Avoid using static addresses
-    f_avail_parklot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process"
-                           "\\avail_parklot.txt", 'a+')
+    f_avail_parklot = open(os.getcwd() + "\\data_process\\avail_parklot.txt", 'a+')
     f_avail_parklot.write("\n")
     f_avail_parklot.write(new_parklot_name)
     f_avail_parklot.close()
@@ -120,11 +117,10 @@ def file_append_avail_parklot(new_parklot_name):
     return 0
 
 # Rewrite the parking lot's parking slots' positions
-def file_slot_write(slot_x, slot_y, num_of_slot):
+def file_slot_write(parklot_name, slot_x, slot_y, num_of_slot):
     # Initiate values:
     slot_index = 0
-    f_slot = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-                  "\\data_process\\park_lot_info\\slot.txt", 'w+')
+    f_slot = open(parent_path + "\\data_process\\{}\\park_lot_info\\slot.txt".format(parklot_name), 'w+')
     # Write slot coordinates to the file
     for slot_index in range(1, num_of_slot+1):
         f_slot.write('%d ' % slot_index)
@@ -140,10 +136,8 @@ def file_landmark_write(ref_xx, ref_yy):
     # Initiate values:
     # Avoid using static addresses
     landmark_index = 0
-    f_landmark = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-                      "\\data_process\\park_lot_info\\landmark.txt", 'w+')
-    f_runt = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2"
-                     "\\data_process\\runTime.txt", 'w+')
+    f_landmark = open(os.getcwd() + "\\park_lot_info\\landmark.txt", 'w+')
+    f_runt = open(os.getcwd() + "\\runTime.txt", 'w+')
     # Write value to the file
     f_runt.write('1')
     # Write landmark coordinates to the file
@@ -153,7 +147,7 @@ def file_landmark_write(ref_xx, ref_yy):
         f_landmark.write('%d\n' % ref_yy[landmark_index])
 
     f_landmark.close()
-    f_runtime.close()
+    f_runt.close()
 
     return 0
 
@@ -167,6 +161,10 @@ def remove_folder_content(address):
 
 # Initiate values
 # ---------------------------------------------------------------------------------------------------------------------
+# Get top working folder directory
+parent_path = os.getcwd()
+# print(parent_path)
+
 index = 0  # index for below lists - Reference landmark position list & Slot position list
 ref_pos_x = []  # Reference landmark coordinate, x-axis
 ref_pos_y = []  # Reference landmark coordinate, y-axis
@@ -198,13 +196,6 @@ file_types = [("JPEG (*.jpg)", ".jpg"),
 # Define a list, emulating reading different parking lot
 list_of_parking_lot, avail_flag = file_open_avail_parklot()
 size_of_list_parklot = len(list_of_parking_lot)
-
-# Image calibration folders
-# Avoid using static addresses
-folder_original = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
-                  "\\data_process\\data"
-folder_calibrated = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
-                    "\\data_process\\calib_image"
 
 ### Debug: Available parking lots
 # for i in range(0, size_of_list_parklot):
@@ -260,21 +251,44 @@ layout_1 = [[sg.Graph(canvas_size=(wid, hght),              # First column
              sg.Button("Save as Landmark", key='-SAVE_LM-'),
              sg.InputText(size=(10, 1), key='-SLOT_NUM-'),
              sg.Button("Save as ParkSlot", key='-SAVE_SLOT-'),
-             sg.Button("Save PSlot file", key='-REDEF_SLOT-', visible=False)],
+             sg.Button("Save PSlot file", key='-REDEF_SLOT-')],
             [sg.Button('Back', key='-BACK_5-'), sg.Button('Finish', key='-FIN-')]]
 
 layout_2 = [[sg.Text(key='-INFO-', size=(50, 1))],          # Second column
             [sg.Text(key='-LM_1-', size=(30, 1))],
             [sg.Text(key='-LM_2-', size=(30, 1))],
             [sg.Text(key='-LM_3-', size=(30, 1))],
-            [sg.Text(key='-LM_4-', size=(30, 1))]]
+            [sg.Text(key='-LM_4-', size=(30, 1))],
+            [sg.Text(key='-SLOT_1-', size=(15, 1))],
+            [sg.Text(key='-SLOT_2-', size=(15, 1))],
+            [sg.Text(key='-SLOT_3-', size=(15, 1))],
+            [sg.Text(key='-SLOT_4-', size=(15, 1))],
+            [sg.Text(key='-SLOT_5-', size=(15, 1))],
+            [sg.Text(key='-SLOT_6-', size=(15, 1))],
+            [sg.Text(key='-SLOT_7-', size=(15, 1))],
+            [sg.Text(key='-SLOT_8-', size=(15, 1))],
+            [sg.Text(key='-SLOT_9-', size=(15, 1))],
+            [sg.Text(key='-SLOT_10-', size=(15, 1))],
+            [sg.Text(key='-SLOT_11-', size=(15, 1))],
+            [sg.Text(key='-SLOT_12-', size=(15, 1))],
+            [sg.Text(key='-SLOT_13-', size=(15, 1))],
+            [sg.Text(key='-SLOT_14-', size=(15, 1))],
+            [sg.Text(key='-SLOT_15-', size=(15, 1))],
+            [sg.Text(key='-SLOT_16-', size=(15, 1))],
+            [sg.Text(key='-SLOT_17-', size=(15, 1))],
+            [sg.Text(key='-SLOT_18-', size=(15, 1))],
+            [sg.Text(key='-SLOT_19-', size=(15, 1))],
+            [sg.Text(key='-SLOT_20-', size=(15, 1))]
+            ]
+
 
 layout_defnew_3 = [[sg.Text('DEFINE PARKING LOT')],         # Master layout of layout 5, combine 1st and 2nd column
                    [sg.Text('Define landmarks & parking slots')],
                    [sg.Column(layout_1), sg.Column(layout_2)]]
 
 # Layout 6/layout_select_calib_mode: Select calibration mode
-layout_select_calib_mode = [[sg.Text("SELECT CALIBRATION TYPE")],
+layout_select_calib_mode = [[sg.Text("SELECT DATA FOLDER & CALIBRATION TYPE")],
+                 [sg.Text("Input data folder"), sg.Input(size = (30, 1), key = '-DATA_FOL-'), sg.FolderBrowse()],
                  [sg.Button('Translation', key='-TRANS-'), sg.Button('Rotation', key='-ROL-')],
                  [sg.Button('Back', key='-BACK_6-')]]
 
@@ -320,10 +334,10 @@ layout = [[sg.Column(layout_open, key='lay_1', element_justification='center'),
            sg.Column(layout_defnew_3, visible=False, key='lay_5'),
            sg.Column(layout_select_calib_mode, visible=False, key='lay_6'),
            sg.Column(layout_wait_error, visible=False, key='lay_7'),
-           sg.Column(layout_result, visible=False, key='lay_8')],
-          [sg.Button('Cycle layout'), sg.Button('1'), sg.Button('2'), sg.Button('3'),
-           sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8'),
-           sg.Button('Exit')]]
+           sg.Column(layout_result, visible=False, key='lay_8')]]
+           # [ sg.Button('Cycle layout'), sg.Button('1'), sg.Button('2'), sg.Button('3'),
+           # sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8'),
+           # sg.Button('Exit')]]
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -392,6 +406,7 @@ while True:
         for i in range(0, size_of_list_parklot):         # Check if name is used, means parking lot is defined
             if parklot_name == list_of_parking_lot[i]:
                 match = 1                                # Found matching result!
+                temp = list_of_parking_lot[i]
         if match == 1:         # Display Redefine, RunAuto option. Not append this new name since it's already available
             window['-RET_MSG_DEFNEW1-'].update(visible=True)    # Matched name message, visible = True
             parklot_name = list_of_parking_lot[i]               # Take the available name instead (Redundant?)
@@ -406,26 +421,40 @@ while True:
             window['-RET_MSG_DEFNEW1-'].update(visible=False)   # Matched name message, visble = False
             window['-NAME_BLANK-'].update(visible=False)        # Blank name message, visible = False
             file_append_avail_parklot(parklot_name)             # Append the new name to available parking lots
+
     # -----------------------------------------------------------------------------------------------------------------
 
     # Work with select reference image
     # -------------------------------------------------------------------------------------------------------
-    if event == '-DEFINE_01-' or event == '-REDEFINE-' or event == '-REDEFINE_DEF-' or event == '-BACK2DEF-':
-    # If event wish to come/comeback to select reference image
-        window[f'lay_{layout}'].update(visible=False)
-        layout = 4                                  # Update select image layout
-        window[f'lay_{layout}'].update(visible=True)
-        # Get the parking lot name
-        if event == '-DEFINE_01-' or event == '-REDEFINE_DEF-':
-            ### Debug: Print parking lot name string
-            # print(parklot_name)
-            print("")
-        else:
+    if event == '-DEFINE_01-' or event == '-REDEFINE-' or event == '-REDEFINE_DEF-' or event == '-BACK2DEF-' \
+            or event == '-RUN-':
+        if event == '-RUN-' or event == '-REDEFINE-':
             strx = ""
             for v in values['-PARKLOT-']:
-                strx = v                                # Extract the string from the list parentheses
+                strx = v  # Extract the string from the list parentheses
             parklot_name = strx
             print(parklot_name)
+            if event == '-REDEFINE-':
+                window[f'lay_{layout}'].update(visible=False)
+                layout = 4  # Update select image layout
+                window[f'lay_{layout}'].update(visible=True)
+                os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
+        else:
+        # If event wish to come/comeback to select reference image
+            window[f'lay_{layout}'].update(visible=False)
+            layout = 4                                  # Update select image layout
+            window[f'lay_{layout}'].update(visible=True)
+            # Get the parking lot name
+            if event == '-DEFINE_01-' or event == '-REDEFINE_DEF-':
+                ### Debug: Print parking lot name string
+                parklot_name = values['-NEW_PARKLOT_NAME-']
+                print(parklot_name)
+            # Create required folders:
+            os.chdir(parent_path + "\\data_process")
+            ff_manip.folder_manip(parklot_name)
+            ff_manip.file_manip(parklot_name)
+            os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
+
 
     # If event is load image, after selecting an available image
     if event == "Load image":
@@ -499,12 +528,31 @@ while True:
             index = int(values['-SLOT_NUM-'])       # Save slot information, save to the -SLOT_NUM- position
             slot_pos_x[index] = int((start_point[0] + end_point[0]) / 2 / scale)
             slot_pos_y[index] = int((start_point[1] + end_point[1]) / 2 / scale)
-            # print(slot_pos_x)
-            # print(slot_pos_y)
+            window['-SLOT_1-'].update(value=f"Slot 01: {slot_pos_x[1]}, {slot_pos_y[1]}")
+            window['-SLOT_2-'].update(value=f"Slot 02: {slot_pos_x[2]}, {slot_pos_y[2]}")
+            window['-SLOT_3-'].update(value=f"Slot 03: {slot_pos_x[3]}, {slot_pos_y[3]}")
+            window['-SLOT_4-'].update(value=f"Slot 04: {slot_pos_x[4]}, {slot_pos_y[4]}")
+            window['-SLOT_5-'].update(value=f"Slot 05: {slot_pos_x[5]}, {slot_pos_y[5]}")
+            window['-SLOT_6-'].update(value=f"Slot 06: {slot_pos_x[6]}, {slot_pos_y[6]}")
+            window['-SLOT_7-'].update(value=f"Slot 07: {slot_pos_x[7]}, {slot_pos_y[7]}")
+            window['-SLOT_8-'].update(value=f"Slot 08: {slot_pos_x[8]}, {slot_pos_y[8]}")
+            window['-SLOT_9-'].update(value=f"Slot 09: {slot_pos_x[9]}, {slot_pos_y[9]}")
+            window['-SLOT_10-'].update(value=f"Slot 10: {slot_pos_x[10]}, {slot_pos_y[10]}")
+            window['-SLOT_11-'].update(value=f"Slot 11: {slot_pos_x[11]}, {slot_pos_y[11]}")
+            window['-SLOT_12-'].update(value=f"Slot 12: {slot_pos_x[12]}, {slot_pos_y[12]}")
+            window['-SLOT_13-'].update(value=f"Slot 13: {slot_pos_x[13]}, {slot_pos_y[13]}")
+            window['-SLOT_14-'].update(value=f"Slot 14: {slot_pos_x[14]}, {slot_pos_y[14]}")
+            window['-SLOT_15-'].update(value=f"Slot 15: {slot_pos_x[15]}, {slot_pos_y[15]}")
+            window['-SLOT_16-'].update(value=f"Slot 16: {slot_pos_x[16]}, {slot_pos_y[16]}")
+            window['-SLOT_17-'].update(value=f"Slot 17: {slot_pos_x[17]}, {slot_pos_y[17]}")
+            window['-SLOT_18-'].update(value=f"Slot 18: {slot_pos_x[18]}, {slot_pos_y[18]}")
+            window['-SLOT_19-'].update(value=f"Slot 19: {slot_pos_x[19]}, {slot_pos_y[19]}")
+            window['-SLOT_20-'].update(value=f"Slot 20: {slot_pos_x[20]}, {slot_pos_y[20]}")
+            # print("{} {} {}\n".format(index, slot_pos_x[index], slot_pos_y[index]))
 
     # Save changes to slot file, if redefine slot button is pressed
     if event == '-REDEF_SLOT-':
-        file_slot_write(slot_pos_x, slot_pos_y, number_of_slot)
+        file_slot_write(parklot_name, slot_pos_x, slot_pos_y, number_of_slot)
     # ---------------------------------------------------------------------------------------
 
     # Work with run automatically
@@ -526,6 +574,14 @@ while True:
         layout = 6                                  # Update select calibration mode layout
         window[f'lay_{layout}'].update(visible=True)
 
+        # Update the destination folders after working with folder name
+        folder_calibrated = parent_path + "\\data_process\\{}\\calib_image".format(parklot_name)
+
+        # Move into the required folder
+        cur_cwd = parent_path + "\\data_process\\{}".format(parklot_name)
+        os.chdir(cur_cwd)
+        # print(os.getcwd())
+
     # Switch between 2 types of calibration: Translation & Rotation
     if event == '-TRANS-' or event == '-ROL-':
         window[f'lay_{layout}'].update(visible=False)
@@ -534,14 +590,14 @@ while True:
         # Avoid using static addresses
         # Remove all files in the previous run. This function should be removed in future updates or refurbished for a
         # better experience
-        write_address = "D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2" \
-                        "\\data_process\\calib_image"
+        folder_original = values['-DATA_FOL-']
+
+        write_address = cur_cwd + "\\calib_image"
         remove_folder_content(write_address)
         # Open runtime file, check if the parking lot is actually defined
-        f_runtime = open("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\"
-                         "\\data_process\\runTime.txt", 'r+')
+        f_runtime = open(cur_cwd + "\\runTime.txt", 'r+')
         # Actual image calibrating
-        landmark_flag, ref_x, ref_y = mytrans.info_open()
+        landmark_flag, ref_x, ref_y = mytrans.info_open(parklot_name)
         checkdef = f_runtime.read()
         progress_bar = window.FindElement('-PROG_BAR-')         # Define loading bar
         if checkdef == '0' or landmark_flag == 1:               # The parking lot is not defined. Redefine required!
@@ -551,7 +607,7 @@ while True:
             window['-NOT_DEF-'].update(visible=False)           # Not defined message, visible = False
             window['-WAIT-'].update(visible=True)               # Wait for processing message, visible = True
             # Change to data need calibration folder
-            os.chdir("D:\\IC DESIGN LAB\\[LAB] PRJ.Parking Lot\\IMAGE_CALIBRATION_V2\\data_process\\data")
+            os.chdir(folder_original)
             number_of_file = 0                                  # Initiate the number of data files need calibration
             run_var = 0                                         # Running variable for loading bar
             for base, dirs, files in os.walk(os.getcwd()):
@@ -569,7 +625,7 @@ while True:
                     # Print debug values
                     print(cur1, cur2, cur3, cur4)
                     print("")
-                    mytrans.main(trans_rot_mode, filename, cur1, cur2, cur3, cur4)
+                    mytrans.main(parklot_name, trans_rot_mode, filename, cur1, cur2, cur3, cur4)
                     run_var = run_var + 1
                     progress_bar.UpdateBar(run_var, number_of_file)     # Update loading bar
                 window['-FINISHED-'].update(visible=True)               # Finished message, visible = True
@@ -581,7 +637,7 @@ while True:
                     window['-PROCESSING_FILE-'].update(value=f"{filename} processing")
                     window['-PROCESSING_FILE-'].update(visible=True)
                     cur1, cur2, cur3, cur4 = mytrans.landmark_recog(filename)
-                    mytrans.main(trans_rot_mode, filename, cur1, cur2, cur3, cur4)
+                    mytrans.main(parklot_name, trans_rot_mode, filename, cur1, cur2, cur3, cur4)
                     run_var = run_var + 1
                     progress_bar.UpdateBar(run_var, number_of_file)     # Update loading bar
                 window['-FINISHED-'].update(visible=True)               # Finished message, visible = True
