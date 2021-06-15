@@ -3,7 +3,6 @@
 ### Import libraries/packages
 # ---------------------------------------------------------------------------------------------------------------------
 import os
-import sys
 import io
 # Import required processing libraries/packages
 import PySimpleGUI as sg
@@ -19,10 +18,6 @@ import folderFileManip as ff_manip
 
 # Pre-compile additional function
 # ---------------------------------------------------------------------------------------------------------------------
-def resource_path(relative_path):
-    if hasattr(sys, '_MEIPASS'):
-        return os.path.join(sys._MEIPASS, relative_path)
-    return os.path.join(os.path.abspath("."), relative_path)
 # ---------------------------------------------------------------------------------------------------------------------
 
 ### Define additional functions:
@@ -45,23 +40,23 @@ def gui_draw(file_name):
     img = cv2.imread(file_name)
     # Avoid using static addresses
     # Use this instead, but be cautious :
-    # gridImg = cv2.imread(os.getcwd() + "\\data_process\\ref_image\\imGrid.png")
+    # grid_img = cv2.imread(os.getcwd() + "\\data_process\\ref_image\\imGrid.png")
     # Make sure the working files are in the right positions before use
-    gridImg = cv2.imread(parent_path + "\\data_process\\grid_img\\imGrid.png")
+    grid_img = cv2.imread(parent_path + "\\data_process\\grid_img\\imGrid.png")
     ### Debug: show Grid image
-    # cv2.imshow("Image", gridImg)
+    # cv2.imshow("Image", grid_img)
     # cv2.waitKey()
 
-    rows, cols, channel = gridImg.shape
+    rows, cols, channel = grid_img.shape
     roi = img[0:rows, 0:cols]
 
     # Add grid to the selected reference image
-    img2gray = cv2.cvtColor(gridImg, cv2.COLOR_BGR2GRAY)
+    img2gray = cv2.cvtColor(grid_img, cv2.COLOR_BGR2GRAY)
     ret, mask = cv2.threshold(img2gray, 200, 255, cv2.THRESH_BINARY_INV)
     mask_inv = cv2.bitwise_not(mask)
     img = cv2.bitwise_and(roi, roi, mask=mask_inv)
-    gridImg_fg = cv2.bitwise_and(gridImg, gridImg, mask=mask)
-    img = cv2.add(img, gridImg_fg)
+    grid_img_fg = cv2.bitwise_and(grid_img, grid_img, mask=mask)
+    img = cv2.add(img, grid_img_fg)
 
     # Get file name, write the image with grid. This will be used in later processing
     name = os.path.splitext(filename)[0]+"_grid.jpg"
@@ -98,15 +93,15 @@ def file_open_avail_parklot():
         avail_parklot = None
         return avail_parklot, file_flag
     else:
-        strx = ""
+        string_x = ""
         # Initiate new list, get the value from the list
         lis = [line.split() for line in f_avail_parklot]
         file_length = len(lis)
 
-        for i in range(file_length):
-            for val in lis[i]:
-                strx = val
-            avail_parklot.append(strx)
+        for ii in range(file_length):
+            for val in lis[ii]:
+                string_x = val
+            avail_parklot.append(string_x)
     f_avail_parklot.close()
 
     return avail_parklot, file_flag
@@ -125,10 +120,9 @@ def file_append_avail_parklot(new_parklot_name):
     return 0
 
 # Rewrite the parking lot's parking slots' positions
-def file_slot_write(parklot_name, slot_x, slot_y, num_of_slot):
+def file_slot_write(park_lot_name, slot_x, slot_y, num_of_slot):
     # Initiate values:
-    slot_index = 0
-    f_slot = open(parent_path + "\\data_process\\{}\\park_lot_info\\slot.txt".format(parklot_name), 'w+')
+    f_slot = open(parent_path + "\\data_process\\{}\\park_lot_info\\slot.txt".format(park_lot_name), 'w+')
     # Write slot coordinates to the file
     for slot_index in range(1, num_of_slot+1):
         f_slot.write('%d ' % slot_index)
@@ -143,7 +137,6 @@ def file_slot_write(parklot_name, slot_x, slot_y, num_of_slot):
 def file_landmark_write(ref_xx, ref_yy):
     # Initiate values:
     # Avoid using static addresses
-    landmark_index = 0
     f_landmark = open(os.getcwd() + "\\park_lot_info\\landmark.txt", 'w+')
     f_runt = open(os.getcwd() + "\\runTime.txt", 'w+')
     # Write value to the file
@@ -161,9 +154,9 @@ def file_landmark_write(ref_xx, ref_yy):
 
 # Remove all folder content before an another run, to avoid image show errors
 def remove_folder_content(address):
-    for filename in os.listdir(address):
-        if os.path.exists(os.path.join(address, filename)):
-            os.remove(os.path.join(address, filename))
+    for file_name in os.listdir(address):
+        if os.path.exists(os.path.join(address, file_name)):
+            os.remove(os.path.join(address, file_name))
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -226,7 +219,7 @@ layout_defnew_1 = [[sg.Text('DEFINE NEW PARKING LOT')],
                    [sg.Text("This parking lot has been defined, select Redefine or Run auto instead",
                             key='-RET_MSG_DEFNEW1-', visible=False)],
                    [sg.Text("Parking lot name is blank, please try again", key='-NAME_BLANK-', visible=False)],
-                   [sg.Button('Back', key ='-BACK_2-')],
+                   [sg.Button('Back', key='-BACK_2-')],
                    [sg.Button('Next', key='-DEFINE_01-', visible=False),
                     sg.Button('Redefine', key='-REDEFINE_DEF-', visible=False),
                     sg.Button('Run auto', key='-RUN_DEF-', visible=False)]
@@ -257,6 +250,7 @@ layout_1 = [[sg.Graph(canvas_size=(wid, hght),              # First column
                       key='-GRAPH-')],
             [sg.InputText(size=(10, 1), key='-LM_NUM-'),
              sg.Button("Save as Landmark", key='-SAVE_LM-'),
+             sg.Button("Save LM file", key='-REDEF_LM-'),
              sg.InputText(size=(10, 1), key='-SLOT_NUM-'),
              sg.Button("Save as ParkSlot", key='-SAVE_SLOT-'),
              sg.Button("Save PSlot file", key='-REDEF_SLOT-')],
@@ -296,9 +290,10 @@ layout_defnew_3 = [[sg.Text('DEFINE PARKING LOT')],         # Master layout of l
 
 # Layout 6/layout_select_calib_mode: Select calibration mode
 layout_select_calib_mode = [[sg.Text("SELECT DATA FOLDER & CALIBRATION TYPE")],
-                 [sg.Text("Input data folder"), sg.Input(size = (30, 1), key = '-DATA_FOL-'), sg.FolderBrowse()],
-                 [sg.Button('Translation', key='-TRANS-'), sg.Button('Rotation', key='-ROL-')],
-                 [sg.Button('Back', key='-BACK_6-')]]
+                            [sg.Text("Input data folder"), sg.Input(size=(30, 1), key='-DATA_FOL-'),
+                             sg.FolderBrowse()],
+                            [sg.Button('Translation', key='-TRANS-'), sg.Button('Rotation', key='-ROL-')],
+                            [sg.Button('Back', key='-BACK_6-')]]
 
 # Layout 7/layout_wait_error: Wait screen/Error screen layout
 layout_wait_error = [[sg.Text("WAIT SCREEN")],
@@ -343,9 +338,9 @@ layout = [[sg.Column(layout_open, key='lay_1', element_justification='center'),
            sg.Column(layout_select_calib_mode, visible=False, key='lay_6'),
            sg.Column(layout_wait_error, visible=False, key='lay_7'),
            sg.Column(layout_result, visible=False, key='lay_8')]]
-           # [ sg.Button('Cycle layout'), sg.Button('1'), sg.Button('2'), sg.Button('3'),
-           # sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8'),
-           # sg.Button('Exit')]]
+# [ sg.Button('Cycle layout'), sg.Button('1'), sg.Button('2'), sg.Button('3'),
+# sg.Button('4'), sg.Button('5'), sg.Button('6'), sg.Button('7'), sg.Button('8'),
+# sg.Button('Exit')]]
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -418,7 +413,6 @@ while True:
                 temp = list_of_parking_lot[i]
         if match == 1:         # Display Redefine, RunAuto option. Not append this new name since it's already available
             window['-RET_MSG_DEFNEW1-'].update(visible=True)    # Matched name message, visible = True
-            parklot_name = list_of_parking_lot[i]               # Take the available name instead (Redundant?)
             window['-REDEFINE_DEF-'].update(visible=True)       # Redefine button, visible = True
             window['-RUN_DEF-'].update(visible=True)            # RunAuto button, visible = True
             window['-DEFINE_01-'].update(visible=False)         # Next button, visible = False
@@ -465,7 +459,6 @@ while True:
             ff_manip.folder_manip(parklot_name)
             ff_manip.file_manip(parklot_name)
             os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
-
 
     # If event is load image, after selecting an available image
     if event == "Load image":
@@ -561,6 +554,10 @@ while True:
             window['-SLOT_20-'].update(value=f"Slot 20: {slot_pos_x[20]}, {slot_pos_y[20]}")
             # print("{} {} {}\n".format(index, slot_pos_x[index], slot_pos_y[index]))
 
+    # Save changes to landmark file, if redefine landmark file is pressed
+    if event == '-REDEF_LM-':
+        file_landmark_write(ref_pos_x, ref_pos_y)
+        
     # Save changes to slot file, if redefine slot button is pressed
     if event == '-REDEF_SLOT-':
         file_slot_write(parklot_name, slot_pos_x, slot_pos_y, number_of_slot)
@@ -577,9 +574,6 @@ while True:
     # Work with select calibration mode
     # ---------------------------------------------------------------------------------------------
     if event == '-RUN-' or event == '-RUN_DEF-' or event == '-FIN-':
-        if event == '-FIN-':                         # Save the landmark information to landmark file
-            file_landmark_write(ref_pos_x, ref_pos_y)
-
         # print("Accessing running mode, return the results")
         window[f'lay_{layout}'].update(visible=False)
         layout = 6                                  # Update select calibration mode layout

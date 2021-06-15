@@ -494,3 +494,1119 @@ Filename: imCab_0_(down_0_right_90_0)
 Working case: 0
 imCab_0_(down_0_right_90_0).jpg recovered
 
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_0_0)
+Working case: 0
+imCab_0_(down_0_right_0_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_100_0)
+Working case: 0
+imCab_0_(down_0_right_100_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_10_0)
+Working case: 0
+imCab_0_(down_0_right_10_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_110_0)
+Working case: 0
+imCab_0_(down_0_right_110_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_120_0)
+Working case: 0
+imCab_0_(down_0_right_120_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_130_0)
+Working case: 0
+imCab_0_(down_0_right_130_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_140_0)
+Working case: 0
+imCab_0_(down_0_right_140_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_150_0)
+Working case: 0
+imCab_0_(down_0_right_150_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_160_0)
+Working case: 0
+imCab_0_(down_0_right_160_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_170_0)
+Working case: 0
+imCab_0_(down_0_right_170_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_180_0)
+Working case: 0
+imCab_0_(down_0_right_180_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_190_0)
+Working case: 0
+imCab_0_(down_0_right_190_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_200_0)
+Working case: 0
+imCab_0_(down_0_right_200_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_20_0)
+Working case: 0
+imCab_0_(down_0_right_20_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_210_0)
+Working case: 0
+imCab_0_(down_0_right_210_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_220_0)
+Working case: 0
+imCab_0_(down_0_right_220_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_230_0)
+Working case: 0
+imCab_0_(down_0_right_230_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_240_0)
+Working case: 0
+imCab_0_(down_0_right_240_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_250_0)
+Working case: 0
+imCab_0_(down_0_right_250_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_260_0)
+Working case: 2
+imCab_0_(down_0_right_260_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_270_0)
+Working case: -1
+imCab_0_(down_0_right_270_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_280_0)
+Working case: -1
+imCab_0_(down_0_right_280_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_290_0)
+Working case: -1
+imCab_0_(down_0_right_290_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_300_0)
+Working case: -1
+imCab_0_(down_0_right_300_0).jpg not recovered, please check the camera/input
+
+Filename: imCab_0_(down_0_right_30_0)
+Working case: 0
+imCab_0_(down_0_right_30_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_40_0)
+Working case: 0
+imCab_0_(down_0_right_40_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_50_0)
+Working case: 0
+imCab_0_(down_0_right_50_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_60_0)
+Working case: 0
+imCab_0_(down_0_right_60_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_70_0)
+Working case: 0
+imCab_0_(down_0_right_70_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_80_0)
+Working case: 0
+imCab_0_(down_0_right_80_0).jpg recovered
+
+Filename: imCab_0_(down_0_right_90_0)
+Working case: 0
+imCab_0_(down_0_right_90_0).jpg recovered
+
