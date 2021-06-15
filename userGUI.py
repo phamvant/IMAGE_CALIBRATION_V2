@@ -3,6 +3,7 @@
 ### Import libraries/packages
 # ---------------------------------------------------------------------------------------------------------------------
 import os
+import sys
 import io
 # Import required processing libraries/packages
 import PySimpleGUI as sg
@@ -16,6 +17,13 @@ import myTranslation as mytrans
 import folderFileManip as ff_manip
 # ---------------------------------------------------------------------------------------------------------------------
 
+# Pre-compile additional function
+# ---------------------------------------------------------------------------------------------------------------------
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+# ---------------------------------------------------------------------------------------------------------------------
 
 ### Define additional functions:
 # ---------------------------------------------------------------------------------------------------------------------
@@ -397,7 +405,8 @@ while True:
     if event == '-ENTER_NAME-':                         # If enter new name button is pressed
         match = 0
         parklot_name = values['-NEW_PARKLOT_NAME-']
-        print(parklot_name)
+        ### Debug: Determine input parking lot name
+        # print(parklot_name)
         if parklot_name == "":                           # Check if new name is blank. Blank name cannot be used
             window['-NAME_BLANK-'].update(visible=True)  # Blank name message, visible = True
             window['-DEFINE_01-'].update(visible=False)  # Next button, visible = False
@@ -433,7 +442,8 @@ while True:
             for v in values['-PARKLOT-']:
                 strx = v  # Extract the string from the list parentheses
             parklot_name = strx
-            print(parklot_name)
+            ### Debug: Determine input parking lot name
+            # print(parklot_name)
             if event == '-REDEFINE-':
                 window[f'lay_{layout}'].update(visible=False)
                 layout = 4  # Update select image layout
@@ -448,7 +458,8 @@ while True:
             if event == '-DEFINE_01-' or event == '-REDEFINE_DEF-':
                 ### Debug: Print parking lot name string
                 parklot_name = values['-NEW_PARKLOT_NAME-']
-                print(parklot_name)
+                ### Debug: Determine input parking lot name
+                # print(parklot_name)
             # Create required folders:
             os.chdir(parent_path + "\\data_process")
             ff_manip.folder_manip(parklot_name)
@@ -569,7 +580,7 @@ while True:
         if event == '-FIN-':                         # Save the landmark information to landmark file
             file_landmark_write(ref_pos_x, ref_pos_y)
 
-        print("Accessing running mode, return the results")
+        # print("Accessing running mode, return the results")
         window[f'lay_{layout}'].update(visible=False)
         layout = 6                                  # Update select calibration mode layout
         window[f'lay_{layout}'].update(visible=True)
@@ -622,9 +633,9 @@ while True:
                     window['-PROCESSING_FILE-'].update(visible=True)
                     # Image calibration
                     cur1, cur2, cur3, cur4 = mytrans.landmark_recog(filename)
-                    # Print debug values
-                    print(cur1, cur2, cur3, cur4)
-                    print("")
+                    ### Debug: Print recognized landmarks values
+                    # print(cur1, cur2, cur3, cur4)
+                    # print("")
                     mytrans.main(parklot_name, trans_rot_mode, filename, cur1, cur2, cur3, cur4)
                     run_var = run_var + 1
                     progress_bar.UpdateBar(run_var, number_of_file)     # Update loading bar
@@ -698,7 +709,7 @@ while True:
         data_cab = get_img_data(filename_cab, (640, 360), first=True)
         after_calib.draw_image(data=data_cab, location=(0, 0))          # Draw image to right graph, image viewer
     # ---------------------------------------------------------------------------------------------
-
+    """
     # Test layout change & direct accessing to available layouts
     # ----------------------------------------------------------
     if event == 'Cycle layout':
@@ -710,4 +721,5 @@ while True:
         layout = int(event)
         window[f'lay_{layout}'].update(visible=True)
     # -----------------------------------------------------------
+    """
 window.close()

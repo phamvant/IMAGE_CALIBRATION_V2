@@ -229,8 +229,8 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
             # print("This function has been run")
             # print(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y)
 
-        else:   # run_flag
-            print("Landmark mismatch, program cannot execute!")
+        # else:   # run_flag
+            # print("Landmark mismatch, program cannot execute!")
 
         return ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y
 
@@ -275,7 +275,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
                 case = 4
         else:   # Cannot process image, return error warning!
             case = -1
-            print("Not enough landmark information, please check the camera")
+            # print("Not enough landmark information, please check the camera!")
 
         return case
 
@@ -433,6 +433,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
             print(filename, " not recovered, please check the camera/input")
             f_debug.write(filename + " not recovered, please check the camera/input\n")
         f_debug.write("\n")
+        print("")
 
 
     def drawRectangle(image, cd):
