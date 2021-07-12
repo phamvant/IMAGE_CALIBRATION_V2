@@ -717,7 +717,7 @@ while True:
         after_calib.draw_image(data=data_cab, location=(0, 0))          # Draw image to right graph, image viewer
     # ---------------------------------------------------------------------------------------------
     """
-    # Test layout change & direct accessing to available layouts
+    # Test layout change & access directly to available layouts
     # ----------------------------------------------------------
     if event == 'Cycle layout':
         window[f'lay_{layout}'].update(visible=False)
