@@ -86,7 +86,7 @@ def file_open_avail_parklot():
 
     # Open file contains defined parking lot name
     # Avoid using static addresses
-    f_avail_parklot = open(os.getcwd() + "\\data_process\\avail_parklot.txt", 'r+')
+    f_avail_parklot = open(parent_path + "\\data_process\\avail_parklot.txt", 'r+')
     if os.stat(os.getcwd() + "\\data_process\\avail_parklot.txt").st_size == 0:
         # Indicates if the parking lot is defined or not. If not, halt the processing program
         file_flag = 1                               # Not defined value
@@ -112,7 +112,7 @@ def file_open_avail_parklot():
 def file_append_avail_parklot(new_parklot_name):
     # Initiate values:
     # Avoid using static addresses
-    f_avail_parklot = open(os.getcwd() + "\\data_process\\avail_parklot.txt", 'a+')
+    f_avail_parklot = open(parent_path + "\\data_process\\avail_parklot.txt", 'a+')
     f_avail_parklot.write("\n")
     f_avail_parklot.write(new_parklot_name)
     f_avail_parklot.close()
@@ -134,11 +134,11 @@ def file_slot_write(park_lot_name, slot_x, slot_y, num_of_slot):
     return 0
 
 # Rewrite the landmarks' positions
-def file_landmark_write(ref_xx, ref_yy):
+def file_landmark_write(ref_xx, ref_yy, park_lot_name):
     # Initiate values:
     # Avoid using static addresses
-    f_landmark = open(os.getcwd() + "\\park_lot_info\\landmark.txt", 'w+')
-    f_runt = open(os.getcwd() + "\\runTime.txt", 'w+')
+    f_landmark = open(parent_path + "\\data_process\\{}\\park_lot_info\\landmark.txt".format(park_lot_name), 'w+')
+    f_runt = open(parent_path + "\\data_process\\{}\\runTime.txt".format(park_lot_name), 'w+')
     # Write value to the file
     f_runt.write('1')
     # Write landmark coordinates to the file
@@ -325,6 +325,7 @@ result_col_2 = [[sg.Text("After calibration")],         # Second column
 
 layout_result = [[sg.Text("RESULTS")],                  # Master layout of layout 8, combine 1st and 2nd column
                  [sg.Text("Before and After Calibration")],
+                 [sg.Text("Image", key='-SHOWN_IMG-', size=(30, 1))],
                  [sg.Column(result_col_1), sg.Column(result_col_2)],
                  [sg.Button("Prev Image", key='-PREV_IMG-'), sg.Button("Next Image", key='-NEXT_IMG-')],
                  [sg.Button("Back to define", key='-BACK2DEF-'), sg.Button("Close the program", key='-CLOSE_PROG-')]]
@@ -442,6 +443,8 @@ while True:
                 window[f'lay_{layout}'].update(visible=False)
                 layout = 4  # Update select image layout
                 window[f'lay_{layout}'].update(visible=True)
+                ff_manip.folder_manip(parklot_name)
+                ff_manip.file_manip(parklot_name)
                 os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
         else:
         # If event wish to come/comeback to select reference image
@@ -556,7 +559,7 @@ while True:
 
     # Save changes to landmark file, if redefine landmark file is pressed
     if event == '-REDEF_LM-':
-        file_landmark_write(ref_pos_x, ref_pos_y)
+        file_landmark_write(ref_pos_x, ref_pos_y, parklot_name)
         
     # Save changes to slot file, if redefine slot button is pressed
     if event == '-REDEF_SLOT-':
@@ -579,6 +582,10 @@ while True:
         layout = 6                                  # Update select calibration mode layout
         window[f'lay_{layout}'].update(visible=True)
 
+        # Check if all required folders are created or not. If not, create new ones
+        ff_manip.folder_manip(parklot_name)
+        ff_manip.file_manip(parklot_name)
+
         # Update the destination folders after working with folder name
         folder_calibrated = parent_path + "\\data_process\\{}\\calib_image".format(parklot_name)
 
@@ -597,8 +604,10 @@ while True:
         # better experience
         folder_original = values['-DATA_FOL-']
 
-        write_address = cur_cwd + "\\calib_image"
-        remove_folder_content(write_address)
+        write_address_full = cur_cwd + "\\calib_image"
+        write_address_small = cur_cwd + "\\calib_image_cut"
+        remove_folder_content(write_address_full)
+        remove_folder_content(write_address_small)
         # Open runtime file, check if the parking lot is actually defined
         f_runtime = open(cur_cwd + "\\runTime.txt", 'r+')
         # Actual image calibrating
@@ -675,6 +684,8 @@ while True:
         filename_cab = os.path.join(folder_calibrated, fnames_c[result_image_index])
         # print(os.path.isfile(filename_og), os.path.isfile(filename_cab))
 
+        # Print the image name:
+        window['-SHOWN_IMG-'].update(value=f"{fnames_o[result_image_index]}")
         # Show the first images:
         data_og = get_img_data(filename_og, (640, 360), first=True)
         before_calib.draw_image(data=data_og, location=(0, 0))          # Draw image to left graph, image viewer
@@ -687,10 +698,12 @@ while True:
             result_image_index = result_image_index - 1
             if result_image_index < 0:
                 result_image_index = numfiles_o + result_image_index
+            window['-SHOWN_IMG-'].update(value=f"{fnames_o[result_image_index]}")
         elif event == '-NEXT_IMG-':                                     # Next function in image viewer
             result_image_index = result_image_index + 1
             if result_image_index >= numfiles_o:
                 result_image_index = result_image_index - numfiles_o
+            window['-SHOWN_IMG-'].update(value=f"{fnames_o[result_image_index]}")
 
         # Grab the image
         filename_og = os.path.join(folder_original, fnames_o[result_image_index])

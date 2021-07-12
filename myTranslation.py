@@ -413,6 +413,9 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         # Cut the desired image
         cut = img[960:960 + height, 540:540 + width]
 
+        # Cutting slot images
+        image_cut(cut, slot_coord)
+
         # Drawing cutting slot
         image_out = drawRectangle(cut, slot_coord)
 
@@ -435,7 +438,28 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         f_debug.write("\n")
         print("")
 
+    # Cut out the slot images after calibration
+    def image_cut(image, cd):
+        # Define writing path
+        image_cut_path = parent_path + "\\data_process\\{}\\calib_image_cut".format(park_lot_name)
+        # Define cutting region
+        for index in range(0, 20):
+            if index in range(0, 8):
+                img = image[cd[2][index] - 75:cd[2][index] + 75, cd[1][index] - 75:cd[1][index] + 75]
+            elif index in range(8, 14):
+                img = image[cd[2][index] - 45:cd[2][index] + 45, cd[1][index] - 45:cd[1][index] + 45]
+            else:
+                img = image[cd[2][index] - 35:cd[2][index] + 35, cd[1][index] - 35:cd[1][index] + 35]
 
+            ### Debug: Show cut image
+            # cv2.imshow("Image", img)
+            # cv2.waitKey()
+
+            # Write cut image
+            name = '{}_{}.jpg'.format(os.path.splitext(filename)[0], index)
+            cv2.imwrite(os.path.join(image_cut_path, name), img)
+
+    # Draw the rectangular regions that the calibrated image will be cut out
     def drawRectangle(image, cd):
         image_out = image
         for i in range(0, 20):
@@ -471,7 +495,6 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
     if trans_rot_mode == 1:
         trans_image, transX, transY = translation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
         rotAngle = 0
-
         save_image(trans_image, r_case, transX, transY, rotAngle)
     ### In case of running image rotation calibration only:
     if trans_rot_mode == 2:

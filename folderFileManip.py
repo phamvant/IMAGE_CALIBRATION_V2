@@ -28,6 +28,7 @@ def folder_manip(input_name): #creating project working directories
     folder_make("data")
     folder_make("park_lot_info")
     folder_make("ref_image")
+    folder_make("calib_image_cut")
 
     # Return the folder pointer to main folder
     os.chdir(path_parent)
