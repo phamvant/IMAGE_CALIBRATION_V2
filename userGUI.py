@@ -78,85 +78,6 @@ def get_img_data(f, max_size, first=False):
         return b_io.getvalue()
     return ImageTk.PhotoImage(img)
 
-# Open available parking lot file, append positions to a list
-def file_open_avail_parklot():
-    # Initiate values
-    file_flag = 0
-    avail_parklot = []
-
-    # Open file contains defined parking lot name
-    # Avoid using static addresses
-    f_avail_parklot = open(parent_path + "\\data_process\\avail_parklot.txt", 'r+')
-    if os.stat(os.getcwd() + "\\data_process\\avail_parklot.txt").st_size == 0:
-        # Indicates if the parking lot is defined or not. If not, halt the processing program
-        file_flag = 1                               # Not defined value
-        avail_parklot = None
-        return avail_parklot, file_flag
-    else:
-        string_x = ""
-        # Initiate new list, get the value from the list
-        lis = [line.split() for line in f_avail_parklot]
-        file_length = len(lis)
-
-        for ii in range(file_length):
-            for val in lis[ii]:
-                string_x = val
-            avail_parklot.append(string_x)
-    f_avail_parklot.close()
-
-    return avail_parklot, file_flag
-
-# Add new parking lot name to available parking lot, if that parking lot is yet to be defined
-# This function is sensitive to the text file's structure & last written position
-# Modify if needed
-def file_append_avail_parklot(new_parklot_name):
-    # Initiate values:
-    # Avoid using static addresses
-    f_avail_parklot = open(parent_path + "\\data_process\\avail_parklot.txt", 'a+')
-    f_avail_parklot.write("\n")
-    f_avail_parklot.write(new_parklot_name)
-    f_avail_parklot.close()
-
-    return 0
-
-# Rewrite the parking lot's parking slots' positions
-def file_slot_write(park_lot_name, slot_x, slot_y, num_of_slot):
-    # Initiate values:
-    f_slot = open(parent_path + "\\data_process\\{}\\park_lot_info\\slot.txt".format(park_lot_name), 'w+')
-    # Write slot coordinates to the file
-    for slot_index in range(1, num_of_slot+1):
-        f_slot.write('%d ' % slot_index)
-        f_slot.write('%d ' % slot_x[slot_index])
-        f_slot.write('%d\n' % slot_y[slot_index])
-
-    f_slot.close()
-
-    return 0
-
-# Rewrite the landmarks' positions
-def file_landmark_write(ref_xx, ref_yy, park_lot_name):
-    # Initiate values:
-    # Avoid using static addresses
-    f_landmark = open(parent_path + "\\data_process\\{}\\park_lot_info\\landmark.txt".format(park_lot_name), 'w+')
-    f_runt = open(parent_path + "\\data_process\\{}\\runTime.txt".format(park_lot_name), 'w+')
-    # Write value to the file
-    f_runt.write('1')
-    # Write landmark coordinates to the file
-    for landmark_index in range(1, 5):
-        f_landmark.write('%d ' % landmark_index)
-        f_landmark.write('%d ' % ref_xx[landmark_index])
-        f_landmark.write('%d\n' % ref_yy[landmark_index])
-
-    f_landmark.close()
-    f_runt.close()
-
-    return 0
-
-# Remove all folder content before an another run, to avoid image show errors
-def remove_folder_content(address):
-    for file_name in os.listdir(address):
-        if os.path.exists(os.path.join(address, file_name)):
-            os.remove(os.path.join(address, file_name))
 # ---------------------------------------------------------------------------------------------------------------------
 
 
@@ -195,7 +116,7 @@ file_types = [("JPEG (*.jpg)", ".jpg"),
               ("All files (*.*)", "*.*")]
 
 # Define a list, emulating reading different parking lot
-list_of_parking_lot, avail_flag = file_open_avail_parklot()
+list_of_parking_lot, avail_flag = ff_manip.file_open_avail_parklot(parent_path)
 size_of_list_parklot = len(list_of_parking_lot)
 
 ### Debug: Available parking lots
@@ -424,7 +345,7 @@ while True:
             window['-RUN_DEF-'].update(visible=False)           # RunAuto button , visible = False
             window['-RET_MSG_DEFNEW1-'].update(visible=False)   # Matched name message, visble = False
             window['-NAME_BLANK-'].update(visible=False)        # Blank name message, visible = False
-            file_append_avail_parklot(parklot_name)             # Append the new name to available parking lots
+            ff_manip.file_append_avail_parklot(parent_path, parklot_name) # Append the new name to available parking lots
 
     # -----------------------------------------------------------------------------------------------------------------
 
@@ -559,11 +480,11 @@ while True:
 
     # Save changes to landmark file, if redefine landmark file is pressed
     if event == '-REDEF_LM-':
-        file_landmark_write(ref_pos_x, ref_pos_y, parklot_name)
+        ff_manip.file_landmark_write(parent_path, ref_pos_x, ref_pos_y, parklot_name)
         
     # Save changes to slot file, if redefine slot button is pressed
     if event == '-REDEF_SLOT-':
-        file_slot_write(parklot_name, slot_pos_x, slot_pos_y, number_of_slot)
+        ff_manip.file_slot_write(parent_path.parklot_name, slot_pos_x, slot_pos_y, number_of_slot)
     # ---------------------------------------------------------------------------------------
 
     # Work with run automatically
@@ -606,8 +527,8 @@ while True:
 
         write_address_full = cur_cwd + "\\calib_image"
         write_address_small = cur_cwd + "\\calib_image_cut"
-        remove_folder_content(write_address_full)
-        remove_folder_content(write_address_small)
+        ff_manip.remove_folder_content(write_address_full)
+        ff_manip.remove_folder_content(write_address_small)
         # Open runtime file, check if the parking lot is actually defined
         f_runtime = open(cur_cwd + "\\runTime.txt", 'r+')
         # Actual image calibrating
