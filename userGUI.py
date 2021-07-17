@@ -6,85 +6,22 @@ import os
 import io
 # Import required processing libraries/packages
 import PySimpleGUI as sg
-import ctypes
 import cv2
-
 from PIL import Image, ImageTk
+
 # Import image calibration algorithm file
 import myTranslation as mytrans
 # Import folder & file manipulation functions
 import folderFileManip as ff_manip
+# Import GUI additional functions
+import infoGUI as inf_gui
 # ---------------------------------------------------------------------------------------------------------------------
-
-# Pre-compile additional function
-# ---------------------------------------------------------------------------------------------------------------------
-# ---------------------------------------------------------------------------------------------------------------------
-
-### Define additional functions:
-# ---------------------------------------------------------------------------------------------------------------------
-# Get native screen resolution, times the ratio for native compatible resolution, avoid bleeding edges
-def get_scr_size(ratio):
-    user32 = ctypes.windll.user32                                       # ctypes function
-    scr_size = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)   # ctypes function, returns a list of parameters
-    scr_width = scr_size[0]
-    scr_height = scr_size[1]
-    width = int(scr_width * ratio)                                      # get width*ratio, for later GUI scaling
-    height = int(scr_height * ratio)                                    # get height*ratio, for later GUI scaling
-
-    return width, height
-
-# Draw a grid on to the image, using an overlay image of grid
-# Could use an another approach, using PySimpleGUI graphing functions since images are shown on graph-based canvas
-def gui_draw(file_name):
-    # Draw a guidance grid onto the image
-    img = cv2.imread(file_name)
-    # Avoid using static addresses
-    # Use this instead, but be cautious :
-    # grid_img = cv2.imread(os.getcwd() + "\\data_process\\ref_image\\imGrid.png")
-    # Make sure the working files are in the right positions before use
-    grid_img = cv2.imread(parent_path + "\\data_process\\grid_img\\imGrid.png")
-    ### Debug: show Grid image
-    # cv2.imshow("Image", grid_img)
-    # cv2.waitKey()
-
-    rows, cols, channel = grid_img.shape
-    roi = img[0:rows, 0:cols]
-
-    # Add grid to the selected reference image
-    img2gray = cv2.cvtColor(grid_img, cv2.COLOR_BGR2GRAY)
-    ret, mask = cv2.threshold(img2gray, 200, 255, cv2.THRESH_BINARY_INV)
-    mask_inv = cv2.bitwise_not(mask)
-    img = cv2.bitwise_and(roi, roi, mask=mask_inv)
-    grid_img_fg = cv2.bitwise_and(grid_img, grid_img, mask=mask)
-    img = cv2.add(img, grid_img_fg)
-
-    # Get file name, write the image with grid. This will be used in later processing
-    name = os.path.splitext(filename)[0]+"_grid.jpg"
-    # Avoid using static addresses
-    # Use this instead, but be cautious:
-    # file_path = os.path.join(os.getcwd()+"\\data_process\\ref_image", name)
-    file_path = os.path.join(os.getcwd() + "\\data_process\\ref_image", name)
-    cv2.imwrite(file_path, img)
-    return file_path
-
-# Convert image data to base64 values, for later drawing on graph canvas
-def get_img_data(f, max_size, first=False):
-    img = Image.open(f)
-    img.thumbnail(max_size, resample=Image.BICUBIC)
-    if first:
-        b_io = io.BytesIO()
-        img.save(b_io, format="PNG")
-        del img
-        return b_io.getvalue()
-    return ImageTk.PhotoImage(img)
-
-# ---------------------------------------------------------------------------------------------------------------------
-
 
 # Initiate values
 # ---------------------------------------------------------------------------------------------------------------------
 # Get top working folder directory
 parent_path = os.getcwd()
+print(parent_path)
 # print(parent_path)
 
 index = 0  # index for below lists - Reference landmark position list & Slot position list
@@ -108,7 +45,7 @@ for j in range(0, number_of_slot + 1):
 scale = 2 / 3
 
 # Initiate screen size, get max GUI resolution
-wid, hght = get_scr_size(scale)
+wid, hght = inf_gui.get_scr_size(scale)
 maxsize = (wid, hght)
 
 # Define image files, which should be used in later definitions
@@ -364,8 +301,8 @@ while True:
                 window[f'lay_{layout}'].update(visible=False)
                 layout = 4  # Update select image layout
                 window[f'lay_{layout}'].update(visible=True)
-                ff_manip.folder_manip(parklot_name)
-                ff_manip.file_manip(parklot_name)
+                ff_manip.folder_manip(parent_path, parklot_name)
+                ff_manip.file_manip(parent_path, parklot_name)
                 os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
         else:
         # If event wish to come/comeback to select reference image
@@ -380,8 +317,8 @@ while True:
                 # print(parklot_name)
             # Create required folders:
             os.chdir(parent_path + "\\data_process")
-            ff_manip.folder_manip(parklot_name)
-            ff_manip.file_manip(parklot_name)
+            ff_manip.folder_manip(parent_path, parklot_name)
+            ff_manip.file_manip(parent_path, parklot_name)
             os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
 
     # If event is load image, after selecting an available image
@@ -407,8 +344,8 @@ while True:
         window[f'lay_{layout}'].update(visible=False)
         layout = 5                                              # Update landmark & slot define layout
         window[f'lay_{layout}'].update(visible=True)
-        grid_drawn = gui_draw(filename)                         # Draw grid on selected image
-        data = get_img_data(grid_drawn, maxsize, first=True)    # Convert reference image data to base64
+        grid_drawn = inf_gui.gui_draw(parent_path, filename)                         # Draw grid on selected image
+        data = inf_gui.get_img_data(grid_drawn, maxsize, first=True)    # Convert reference image data to base64
         graph.draw_image(data=data, location=(0, 0))            # Draw image to grid, layout 5
 
     # Define actions on graph
@@ -504,8 +441,8 @@ while True:
         window[f'lay_{layout}'].update(visible=True)
 
         # Check if all required folders are created or not. If not, create new ones
-        ff_manip.folder_manip(parklot_name)
-        ff_manip.file_manip(parklot_name)
+        ff_manip.folder_manip(parent_path, parklot_name)
+        ff_manip.file_manip(parent_path, parklot_name)
 
         # Update the destination folders after working with folder name
         folder_calibrated = parent_path + "\\data_process\\{}\\calib_image".format(parklot_name)
@@ -608,9 +545,9 @@ while True:
         # Print the image name:
         window['-SHOWN_IMG-'].update(value=f"{fnames_o[result_image_index]}")
         # Show the first images:
-        data_og = get_img_data(filename_og, (640, 360), first=True)
+        data_og = inf_gui.get_img_data(filename_og, (640, 360), first=True)
         before_calib.draw_image(data=data_og, location=(0, 0))          # Draw image to left graph, image viewer
-        data_cab = get_img_data(filename_cab, (640, 360), first=True)
+        data_cab = inf_gui.get_img_data(filename_cab, (640, 360), first=True)
         after_calib.draw_image(data=data_cab, location=(0, 0))          # Draw image to right graph, image viewer
 
     # Image scrolling
@@ -632,9 +569,9 @@ while True:
         # print(os.path.isfile(filename_og), os.path.isfile(filename_cab))
 
         # Show the images:
-        data_og = get_img_data(filename_og, (640, 360), first=True)
+        data_og = inf_gui.get_img_data(filename_og, (640, 360), first=True)
         before_calib.draw_image(data=data_og, location=(0, 0))          # Draw image to left graph, image viewer
-        data_cab = get_img_data(filename_cab, (640, 360), first=True)
+        data_cab = inf_gui.get_img_data(filename_cab, (640, 360), first=True)
         after_calib.draw_image(data=data_cab, location=(0, 0))          # Draw image to right graph, image viewer
     # ---------------------------------------------------------------------------------------------
     """

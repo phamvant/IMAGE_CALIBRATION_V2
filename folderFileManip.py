@@ -8,8 +8,9 @@ from os import path
 # input_name = input("Write your input name here: ")
 
 # Create required working directory if needed
-def folder_manip(input_name):
-    path_parent = os.getcwd()
+def folder_manip(pathparent, input_name):
+    print(pathparent)
+    os.chdir(pathparent + '//data_process')
     ### Debug: Print the parent folder name
     # print(path_parent)
 
@@ -33,15 +34,15 @@ def folder_manip(input_name):
     folder_make("calib_image_cut")
 
     # Return the folder pointer to main folder
-    os.chdir(path_parent)
+    os.chdir(pathparent)
     ### Debug: Print current working directory
     # print(os.getcwd())
 
     # print(os.listdir)
 
 # Create required working files
-def file_manip(input_name):  # Making log files for future access
-    path_parent = os.getcwd()
+def file_manip(pathparent, input_name):  # Making log files for future access
+    os.chdir(pathparent + '//data_process//{}'.format(input_name))
     ### Debug: Print working directory
     # print(pathParent)
 
@@ -53,9 +54,6 @@ def file_manip(input_name):  # Making log files for future access
         else:
             print(filename + ' existed!')
 
-    # Move inside requested folder
-    os.chdir(".\\{}".format(input_name))
-
     # Create files to store debug data
     file_make("debug.txt")
     file_make("runTime.txt")
@@ -65,7 +63,7 @@ def file_manip(input_name):  # Making log files for future access
     file_make("slot.txt")
     file_make("landmark.txt")
 
-    os.chdir(path_parent)
+    os.chdir(pathparent)
 
 # Open available parking lot file, append positions to a list
 def file_open_avail_parklot(parent_path):
