@@ -56,12 +56,6 @@ file_types = [("JPEG (*.jpg)", ".jpg"),
 list_of_parking_lot, avail_flag = ff_manip.file_open_avail_parklot(parent_path)
 size_of_list_parklot = len(list_of_parking_lot)
 
-### Debug: Available parking lots
-# for i in range(0, size_of_list_parklot):
-#    print(list_of_parking_lot[i])
-# ---------------------------------------------------------------------------------------------------------------------
-
-
 ### Define layouts
 # ---------------------------------------------------------------------------------------------------------------------
 # Layout 1/layout_open: Opening layout of the program
@@ -357,8 +351,8 @@ while True:
         else:
             end_point = (x, y)                                  # Get ending point
         if prior_rect:
-            graph.delete_figure(prior_rect)                     #  Delete previous selected zone
-        if None not in (start_point, end_point):                # ?
+            graph.delete_figure(prior_rect)                     # Delete previous selected zone
+        if None not in (start_point, end_point):
             prior_rect = graph.draw_rectangle(start_point, end_point, line_color='blue')
     elif event.endswith('+UP'):                                 # If mouse is released
         info = window['-INFO-']                                 # Update information on image (rectangle)
@@ -421,7 +415,7 @@ while True:
         
     # Save changes to slot file, if redefine slot button is pressed
     if event == '-REDEF_SLOT-':
-        ff_manip.file_slot_write(parent_path.parklot_name, slot_pos_x, slot_pos_y, number_of_slot)
+        ff_manip.file_slot_write(parent_path, parklot_name, slot_pos_x, slot_pos_y, number_of_slot)
     # ---------------------------------------------------------------------------------------
 
     # Work with run automatically
