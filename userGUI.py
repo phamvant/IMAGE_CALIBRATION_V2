@@ -15,6 +15,8 @@ import myTranslation as mytrans
 import folderFileManip as ff_manip
 # Import GUI additional functions
 import infoGUI as inf_gui
+# Import camera functions
+import cameraFunction as cam_func
 # ---------------------------------------------------------------------------------------------------------------------
 
 # Initiate values
@@ -87,10 +89,10 @@ layout_runauto_1 = [[sg.Text("RUN CALIBRATING AUTOMATICALLY")],
 # Layout 4/layout_defnew_2: Select reference image layout
 layout_defnew_2 = [[sg.Text('DEFINE PARKING LOT')],
                    [sg.Text('Select reference image')],
-                   [sg.Text('Choose a file: '), sg.Input(size=(30, 1), key='-REFIMG-'),
-                    sg.FileBrowse(file_types=file_types)],
-                   [sg.Button("Load image")],
-                   [sg.Image(key="-IMAGE-")],
+                   [sg.Text('Choose a file: '), sg.Input(size=(30, 1), key='-REF_IMG-'),
+                    sg.FileBrowse(file_types=file_types), sg.Button("Load image", key='-LOAD_FROM_BROWSE-')],
+                   [sg.Text('Or load image from camera'), sg.Button("Load from camera", key='-LOAD_FROM_CAM-')],
+                   [sg.Image(key='-REFERENCE_IMAGE-')],
                    [sg.Button('Back', key='-BACK_4-'), sg.Button('Next', key='-DEFINE_02-', visible=False)]]
 
 # Layout 5/layout_defnew3: Define landmarks & parking slots layout
@@ -208,6 +210,8 @@ layout = 1
 graph = window['-GRAPH-']
 before_calib = window['-BEFORE_CALIB-']
 after_calib = window['-AFTER_CALIB-']
+# Initiate variables related to camera functions
+camera_runtime_value = 0
 # Initiate index for image viewer, layout 8
 result_image_index = 0
 # Enable/Disable dragging variables, for drawing on graph
@@ -228,7 +232,7 @@ while True:
 
     # Work with Back function
     # -----------------------------------------------------------------------------------------------------------------
-    if event == '-BACK_2-' or event == '-BACK_3-' or event == '-BACK_4-' or event == '-BACK_5-' or event == '-BACK_6-':
+    if event == '-BACK_{}-'.format(layout):
         if layout == 2 or layout == 3 or layout == 4:
             window[f'lay_{layout}'].update(visible=False)       # Toggle current layout off
             layout = 1                                          # Update desired layout value
@@ -274,9 +278,10 @@ while True:
             window['-DEFINE_01-'].update(visible=True)          # Next button, visible = True
             window['-REDEFINE_DEF-'].update(visible=False)      # Redefine button, visible = False
             window['-RUN_DEF-'].update(visible=False)           # RunAuto button , visible = False
-            window['-RET_MSG_DEFNEW1-'].update(visible=False)   # Matched name message, visble = False
+            window['-RET_MSG_DEFNEW1-'].update(visible=False)   # Matched name message, visible = False
             window['-NAME_BLANK-'].update(visible=False)        # Blank name message, visible = False
-            ff_manip.file_append_avail_parklot(parent_path, parklot_name) # Append the new name to available parking lots
+            ff_manip.file_append_avail_parklot(parent_path, parklot_name)
+            # Append the new name to available parking lots
 
     # -----------------------------------------------------------------------------------------------------------------
 
@@ -298,8 +303,10 @@ while True:
                 ff_manip.folder_manip(parent_path, parklot_name)
                 ff_manip.file_manip(parent_path, parklot_name)
                 os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
+                ff_manip.remove_folder_content(parent_path + "\\data_process\\{}\\image_take_from_camera"
+                                               .format(parklot_name))
         else:
-        # If event wish to come/comeback to select reference image
+            # If event wish to come/comeback to select reference image
             window[f'lay_{layout}'].update(visible=False)
             layout = 4                                  # Update select image layout
             window[f'lay_{layout}'].update(visible=True)
@@ -314,25 +321,32 @@ while True:
             ff_manip.folder_manip(parent_path, parklot_name)
             ff_manip.file_manip(parent_path, parklot_name)
             os.chdir(parent_path + "\\data_process\\{}".format(parklot_name))
+            ff_manip.remove_folder_content(parent_path + "\\data_process\\{}\\image_take_from_camera"
+                                           .format(parklot_name))
 
     # If event is load image, after selecting an available image
-    if event == "Load image":
-        filename = values['-REFIMG-']   # Update image value
+    if event == '-LOAD_FROM_BROWSE-' or event == '-LOAD_FROM_CAM-':
+        filename = ""
+        if event == '-LOAD_FROM_BROWSE-':
+            filename = values['-REF_IMG-']   # Update image value
+        elif event == '-LOAD_FROM_CAM-':
+            read_status, filename = cam_func.main_camera_func(parent_path, parklot_name, camera_runtime_value)
+            camera_runtime_value += 1
         # print(filename)
         # print(filename)
         if os.path.exists(filename):    # Open image & show thumbnail before proceed to process
-            image = Image.open(values['-REFIMG-'])
+            image = Image.open(filename)
             image.thumbnail((500, 500))
             bio = io.BytesIO()
             image.save(bio, format="PNG")
-            window["-IMAGE-"].update(data=bio.getvalue())   # Show image
+            window['-REFERENCE_IMAGE-'].update(data=bio.getvalue())   # Show image
             window['-DEFINE_02-'].update(visible=True)      # Next button, visible = True
     # -----------------------------------------------------------------------------------------------------
 
     # Work with define landmark and parking slot
     # --------------------------------------------------------------------------------------
     if event == '-DEFINE_02-':
-    # If event is input image for parking lot defining
+        # If event is input image for parking lot defining
         ### Debug:
         # print("Accessing landmark & parking slot mode")
         window[f'lay_{layout}'].update(visible=False)

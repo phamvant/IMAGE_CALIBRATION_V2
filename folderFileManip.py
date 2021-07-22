@@ -8,9 +8,9 @@ from os import path
 # input_name = input("Write your input name here: ")
 
 # Create required working directory if needed
-def folder_manip(pathparent, input_name):
-    print(pathparent)
-    os.chdir(pathparent + '//data_process')
+def folder_manip(parent_path, input_name):
+    print(parent_path)
+    os.chdir(parent_path + '//data_process')
     ### Debug: Print the parent folder name
     # print(path_parent)
 
@@ -32,19 +32,20 @@ def folder_manip(pathparent, input_name):
     folder_make("park_lot_info")
     folder_make("ref_image")
     folder_make("calib_image_cut")
+    folder_make("image_take_from_camera")
 
     # Return the folder pointer to main folder
-    os.chdir(pathparent)
+    os.chdir(parent_path)
     ### Debug: Print current working directory
     # print(os.getcwd())
 
     # print(os.listdir)
 
 # Create required working files
-def file_manip(pathparent, input_name):  # Making log files for future access
-    os.chdir(pathparent + '//data_process//{}'.format(input_name))
+def file_manip(parent_path, input_name):  # Making log files for future access
+    os.chdir(parent_path + '//data_process//{}'.format(input_name))
     ### Debug: Print working directory
-    # print(pathParent)
+    # print(parent_path)
 
     def file_make(filename):
         if not path.isfile(filename):
@@ -63,7 +64,7 @@ def file_manip(pathparent, input_name):  # Making log files for future access
     file_make("slot.txt")
     file_make("landmark.txt")
 
-    os.chdir(pathparent)
+    os.chdir(parent_path)
 
 # Open available parking lot file, append positions to a list
 def file_open_avail_parklot(parent_path):
@@ -74,7 +75,7 @@ def file_open_avail_parklot(parent_path):
     # Open file contains defined parking lot name
     # Avoid using static addresses
     f_avail_parklot = open(parent_path + "\\data_process\\avail_parklot.txt", 'r+')
-    if os.stat(os.getcwd() + "\\data_process\\avail_parklot.txt").st_size == 0:
+    if os.stat(parent_path + "\\data_process\\avail_parklot.txt").st_size == 0:
         # Indicates if the parking lot is defined or not. If not, halt the processing program
         file_flag = 1                               # Not defined value
         avail_parklot = None

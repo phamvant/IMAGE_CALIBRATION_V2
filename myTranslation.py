@@ -2,6 +2,8 @@ import os
 import numpy as np
 import cv2
 import imutils
+import datetime
+
 # import math
 
 # Define my image calibration algorithm
@@ -27,6 +29,7 @@ for k in range(0, 5):  # Initiate above lists
     cur_x.append(0)
     cur_y.append(0)
 
+
 # Open parking lot information files - landmark
 def info_open_slot(park_lot_name):
     file_flag = 0
@@ -39,15 +42,16 @@ def info_open_slot(park_lot_name):
     else:
         lis = [line.split() for line in f_slot]
         n = len(lis[0])
-        fileLength = len(lis)
+        file_length = len(lis)
 
         for j in range(n):
-            tempArray = []
-            for i in range(fileLength):
-                tempArray.append(int(lis[i][j]))
-            coord.append(tempArray)
+            temp_array = []
+            for i in range(file_length):
+                temp_array.append(int(lis[i][j]))
+            coord.append(temp_array)
 
     return file_flag, coord
+
 
 def info_open(park_lot_name):
     global ref_x, ref_y
@@ -70,7 +74,7 @@ def info_open(park_lot_name):
             for i in range(file_length):
                 temp_array.append(int(lis[i][j]))
             coord.append(temp_array)
-        ### Debug code:
+        ### Debug:
         # print(coord)
         ref_x[1] = coord[1][0]
         ref_y[1] = coord[2][0]
@@ -82,18 +86,19 @@ def info_open(park_lot_name):
         ref_y[4] = coord[2][3]
     return file_flag, ref_x, ref_y
 
+
 # Recognize landmarks available on the input image!
 def landmark_recog(filename):
     # Value indicates how many contour available at desired landmark positions. Best value = 1
     # Initiate values
-    cur_1 = 0   # Landmark 1
-    cur_2 = 0   # Landmark 2
-    cur_3 = 0   # Landmark 3
-    cur_4 = 0   # Landmark 4
+    cur_1 = 0  # Landmark 1
+    cur_2 = 0  # Landmark 2
+    cur_3 = 0  # Landmark 3
+    cur_4 = 0  # Landmark 4
 
     # Input image, create binary mask for contour recognition
     img = cv2.imread(filename)
-    ### Debug code:
+    ### Debug:
     # print(img)
     # cv2.imshow("Check image", img)
     # cv2.waitKey()
@@ -101,7 +106,7 @@ def landmark_recog(filename):
     im_hsv = cv2.cvtColor(img_copy, cv2.COLOR_BGR2HSV)
     im_mask = cv2.inRange(im_hsv, im_lower, im_upper)
     im_mask = cv2.morphologyEx(im_mask, cv2.MORPH_OPEN, kernel)
-    ### Debug code:
+    ### Debug:
     # cv2.imshow("Test landmark_recog", im_mask)
     # cv2.waitKey(1000)
 
@@ -132,22 +137,22 @@ def landmark_recog(filename):
             cur_x[4] = x + (w // 2)
             cur_y[4] = y + (h // 2)
             cur_4 = cur_4 + 1
-    ### Debug code:
+    ### Debug:
     # print(cur_1, cur_2, cur_3, cur_4)
 
-    return cur_1, cur_2, cur_3, cur_4   # Return available contour values
+    return cur_1, cur_2, cur_3, cur_4  # Return available contour values
+
 
 # Translation & Rotation calibration function
 def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
-
     # Switch case for translation/rotation properties, based on the number of landmarks found & check availability
     def case_switch_mode():
-        run_flag = 0        # Initiate run_flag, determine if the program could execute or not
-        run_mode = 0        # Initiate run_mode, determine if the program run in 4 landmarks mode or 3 landmarks mode
+        run_flag = 0  # Initiate run_flag, determine if the program could execute or not
+        run_mode = 0  # Initiate run_mode, determine if the program run in 4 landmarks mode or 3 landmarks mode
         # run_mode = 1: 4 landmarks mode, run_mode = 0: 3 landmark mode
-        cur_toggle = []     # List, determine which landmark could be used
+        cur_toggle = []  # List, determine which landmark could be used
 
-        for i in range(0, 5):   # Initiate cur_toggle list, cur_toggle[0]:cur_toggle[5]
+        for i in range(0, 5):  # Initiate cur_toggle list, cur_toggle[0]:cur_toggle[5]
             cur_toggle.append(0)
 
         # sum_cur variable, quick check if the landmarks could be used or not
@@ -158,7 +163,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
             if cur_1 == 1 and cur_2 == 1 and cur_3 == 1 and cur_4 == 1:
                 run_flag = 1
                 run_mode = 1
-            else:   # sum_cur is not correct, check the individuals
+            else:  # sum_cur is not correct, check the individuals
                 if cur_1 != 1:
                     print("cur_1 = ", cur_1, ", <> 1, eliminate")
                     cur_toggle[1] = 1
@@ -204,7 +209,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         ref_midpoint_y = 0
         cur_midpoint_x = 0
         cur_midpoint_y = 0
-        if run_flag == 1 and run_mode == 1:     # Calculate using all 4 landmarks
+        if run_flag == 1 and run_mode == 1:  # Calculate using all 4 landmarks
             for i in range(1, 5):
                 ref_midpoint_x = ref_midpoint_x + ref_x[i]
                 ref_midpoint_y = ref_midpoint_y + ref_y[i]
@@ -214,7 +219,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
             ref_midpoint_y = int(ref_midpoint_y / 4)
             cur_midpoint_x = int(cur_midpoint_x / 4)
             cur_midpoint_y = int(cur_midpoint_y / 4)
-        elif run_flag == 1 and run_mode == 0:   # Calculate using 3 available landmarks only
+        elif run_flag == 1 and run_mode == 0:  # Calculate using 3 available landmarks only
             for i in range(1, 5):
                 if cur_toggle[i] == 0:
                     ref_midpoint_x = ref_midpoint_x + ref_x[i]
@@ -225,12 +230,12 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
             ref_midpoint_y = int(ref_midpoint_y / 3)
             cur_midpoint_x = int(cur_midpoint_x / 3)
             cur_midpoint_y = int(cur_midpoint_y / 3)
-            ### Debug code":
+            ### Debug":
             # print("This function has been run")
             # print(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y)
 
         # else:   # run_flag
-            # print("Landmark mismatch, program cannot execute!")
+        # print("Landmark mismatch, program cannot execute!")
 
         return ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y
 
@@ -241,13 +246,13 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         ref_vector = [ref_midpoint_x - ref_xx, ref_midpoint_y - ref_yy]
         cur_vector = [cur_midpoint_x - cur_xx, cur_midpoint_y - cur_yy]
 
-        unit_ref_vector = ref_vector/np.linalg.norm(ref_vector)
-        unit_cur_vector = cur_vector/np.linalg.norm(cur_vector)
+        unit_ref_vector = ref_vector / np.linalg.norm(ref_vector)
+        unit_cur_vector = cur_vector / np.linalg.norm(cur_vector)
         dot_prod = np.dot(unit_ref_vector, unit_cur_vector)
 
         angle = np.arccos(dot_prod) * 180 / 3.1415
 
-        ### Debug code:
+        ### Debug:
         # print(angle)
 
         return angle
@@ -261,7 +266,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         # case = 2: 3 landmarks mode, landmark 02 eliminated from calculation due to error
         # case = 3: 3 landmarks mode, landmark 03 eliminated from calculation due to error
         # case = 4: 3 landmarks mode, landmark 04 eliminated from calculation due to error
-        case = -1    # Initiate case, default = -1 to prevent unwanted processing
+        case = -1  # Initiate case, default = -1 to prevent unwanted processing
         if run_flag == 1 and run_mode == 1:
             case = 0
         elif run_flag == 1 and run_mode == 0:
@@ -273,7 +278,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
                 case = 3
             if cur_toggle[4] == 1:
                 case = 4
-        else:   # Cannot process image, return error warning!
+        else:  # Cannot process image, return error warning!
             case = -1
             # print("Not enough landmark information, please check the camera!")
 
@@ -287,8 +292,8 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         # Expand the image to 3000 x 3000 px
         zoom = cv2.warpAffine(img, roi, (3000, 3000))
         # Matching the center point of the original image to the new center point of 3000 x 3000 px image
-        shift_image = imutils.translate(zoom, (1500 - 1920/2), (1500 - 1080/2))
-        ### Debug code: Show enlarged & shifted image
+        shift_image = imutils.translate(zoom, (1500 - 1920 / 2), (1500 - 1080 / 2))
+        ### Debug: Show enlarged & shifted image
         # cv2.imshow("Test image", shift_image)
         # cv2.waitKey()
 
@@ -298,42 +303,42 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
     def translation(shift_image, case, ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y):
         if case != -1:
             # Initiate values
-            trans_x = ref_midpoint_x - cur_midpoint_x
-            trans_y = ref_midpoint_y - cur_midpoint_y
+            translation_x = ref_midpoint_x - cur_midpoint_x
+            translation_y = ref_midpoint_y - cur_midpoint_y
 
             # If the shift is around 5 px, the translation is ignored
             # Landmark recognition might have small errors in calculating positions
-            if trans_x in range(-5, 6):
-                trans_x = 0
-            if trans_y in range(-5, 6):
-                trans_y = 0
-            ### Debug code: Return value to check
+            if translation_x in range(-5, 6):
+                translation_x = 0
+            if translation_y in range(-5, 6):
+                translation_y = 0
+            ### Debug: Return value to check
             # print(trans_x, trans_y)
 
             # Return the original position
             shift_copy = shift_image
-            shift_revert = imutils.translate(shift_copy, trans_x, trans_y)
+            shift_revert = imutils.translate(shift_copy, translation_x, translation_y)
 
         else:
-            trans_x = 0
-            trans_y = 0
+            translation_x = 0
+            translation_y = 0
             # Zoom out image
             shift = zoom_image(image)
             # Do nothing, return the original image
             shift_revert = shift
 
-        return shift_revert, trans_x, trans_y
+        return shift_revert, translation_x, translation_y
 
     def rotation(shift_image, case, ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y):
 
         # Initiate the values
-        angle = []              # Rotation angle properties, angle[1]:angle[4] correspond to angle calculations
-                                # based on landmark01:landmark04
-        angle_final = 0         # Average rotation angle
-        for i in range(0, 5):   # Initiate angle list
+        angle = []  # Rotation angle properties, angle[1]:angle[4] correspond to angle calculations
+        # based on landmark01:landmark04
+        angle_final = 0  # Average rotation angle
+        for i in range(0, 5):  # Initiate angle list
             angle.append(0)
 
-        ### Debug code:
+        ### Debug:
         # print("Process case = ", case)
         # case = 0, 4 landmarks mode, calculation based on angle[1] and angle[4]
         if case == 0:
@@ -341,12 +346,12 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
                                     ref_x[1], ref_y[1], cur_x[1], cur_y[1])
             angle[4] = rotate_angle(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y,
                                     ref_x[4], ref_y[4], cur_x[4], cur_y[4])
-            angle_final = round((angle[1] + angle[4])/2)
+            angle_final = round((angle[1] + angle[4]) / 2)
             # If the current x[1] coordinate > reference x[1] coordinate, image has rotated clockwise, need to revert
             # with a negative angle
             if cur_x[1] > ref_x[1]:
                 angle_final = -angle_final
-            ### Debug code: Print angle[1], angle[4] & angle_final
+            ### Debug: Print angle[1], angle[4] & angle_final
             # print(angle[1], angle[4])
             # print(angle_final)
         # case = 2 or case = 3, 3 landmarks mode, calculation based on angle[1] and angle[4]
@@ -355,12 +360,12 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
                                     ref_x[1], ref_y[1], cur_x[1], cur_y[1])
             angle[4] = rotate_angle(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y,
                                     ref_x[4], ref_y[4], cur_x[4], cur_y[4])
-            angle_final = round((angle[1] + angle[4])/2)
+            angle_final = round((angle[1] + angle[4]) / 2)
             # If the current x[1] coordinate > reference x[1] coordinate, image has rotated clockwise, need to revert
             # with a negative angle
             if cur_x[1] > ref_x[1]:
                 angle_final = -angle_final
-            ### Debug code: Print angle[1], angle[4] & angle_final
+            ### Debug: Print angle[1], angle[4] & angle_final
             # print(angle[1], angle[4])
             # print(angle_final)
         if case == 1 or case == 4:
@@ -368,10 +373,10 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
                                     ref_x[2], ref_y[2], cur_x[2], cur_y[2])
             angle[3] = rotate_angle(ref_midpoint_x, ref_midpoint_y, cur_midpoint_x, cur_midpoint_y,
                                     ref_x[3], ref_y[3], cur_x[3], cur_y[3])
-            angle_final = round((angle[2] + angle[3])/2)
+            angle_final = round((angle[2] + angle[3]) / 2)
             if cur_x[2] > ref_x[2]:
                 angle_final = -angle_final
-            ### Debug code: Print angle[2], angle[3] & angle_final
+            ### Debug: Print angle[2], angle[3] & angle_final
             # print(angle[2], angle[3])
             # print(angle_final)
         if case == -1:
@@ -380,17 +385,17 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
 
             rotate_image = shift_image
             return rotate_image, 0
-        ### Debug code:
+        ### Debug:
         # print(angle_final)
 
         # Check if the angle is too large
         if angle_final in range(-12, 13):
             # Rotate the image
             shift_copy = shift_image
-            ### Debug code:
+            ### Debug:
             # cv2.imwrite(os.path.join("D:\\21_05_08_result\\debug", "debug.jpg"), shift_copy)
             rotate_mat = cv2.getRotationMatrix2D((3000 // 2, 3000 // 2), angle_final, 1.0)
-            ### Debug code: Print debug value
+            ### Debug: Print debug value
             # cv2.imshow("Image", shift_copy)
             # cv2.waitKey()
             # print(rotate_mat)
@@ -405,7 +410,7 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         return rotate_image, angle_final
 
     # Crop out the original image & save image function
-    def save_image(img, case, trans_x, trans_y, angle):
+    def save_image(img, case, translation_x, translation_y, angle):
 
         # Initiate height, width values. Avoid using constant, try using
         height = 1080
@@ -417,15 +422,17 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         image_cut(cut, slot_coord)
 
         # Drawing cutting slot
-        image_out = drawRectangle(cut, slot_coord)
+        image_out = draw_rectangle(cut, slot_coord)
 
         # Write down the desired image
         # Avoid using static addresses, try using environment variable instead!
-        result_path = parent_path + "\\data_process\\{}\\calib_image".format(park_lot_name)     # Image save path
-        name = os.path.splitext(filename)[0]    # Separate filename, remove the extension
-        cv2.imwrite(os.path.join(result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, trans_x, trans_y, angle)), image_out)
+        result_path = parent_path + "\\data_process\\{}\\calib_image".format(park_lot_name)  # Image save path
+        name = os.path.splitext(filename)[0]  # Separate filename, remove the extension
+        cv2.imwrite(os.path.join(result_path, 'recov_{}_({}_{}_{}).jpg'.format(name, translation_x, translation_y,
+                                                                               angle)), image_out)
         # Log debug information
         f_debug = open(parent_path + "\\data_process\\{}\\debug.txt".format(park_lot_name), 'a+')
+        f_debug.write("{}\n".format(datetime.datetime.now()))
         f_debug.write("Filename: {}\n".format(name))
         f_debug.write("Working case: {}\n".format(case))
         if case != -1:
@@ -439,17 +446,17 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         print("")
 
     # Cut out the slot images after calibration
-    def image_cut(image, cd):
+    def image_cut(image_in, cd):
         # Define writing path
         image_cut_path = parent_path + "\\data_process\\{}\\calib_image_cut".format(park_lot_name)
         # Define cutting region
         for index in range(0, 20):
             if index in range(0, 8):
-                img = image[cd[2][index] - 75:cd[2][index] + 75, cd[1][index] - 75:cd[1][index] + 75]
+                img = image_in[cd[2][index] - 75:cd[2][index] + 75, cd[1][index] - 75:cd[1][index] + 75]
             elif index in range(8, 14):
-                img = image[cd[2][index] - 45:cd[2][index] + 45, cd[1][index] - 45:cd[1][index] + 45]
+                img = image_in[cd[2][index] - 45:cd[2][index] + 45, cd[1][index] - 45:cd[1][index] + 45]
             else:
-                img = image[cd[2][index] - 35:cd[2][index] + 35, cd[1][index] - 35:cd[1][index] + 35]
+                img = image_in[cd[2][index] - 35:cd[2][index] + 35, cd[1][index] - 35:cd[1][index] + 35]
 
             ### Debug: Show cut image
             # cv2.imshow("Image", img)
@@ -460,8 +467,8 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
             cv2.imwrite(os.path.join(image_cut_path, name), img)
 
     # Draw the rectangular regions that the calibrated image will be cut out
-    def drawRectangle(image, cd):
-        image_out = image
+    def draw_rectangle(image_in, cd):
+        image_out = image_in
         for i in range(0, 20):
             if i in range(0, 8):
                 cv2.rectangle(image_out, (cd[1][i] - 75, cd[2][i] - 75), (cd[1][i] + 75, cd[2][i] + 75), (0, 255, 0), 2)
@@ -472,15 +479,12 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
         return image_out
 
     # Connect functions
-    f_debug = open(parent_path + "\\data_process\\debug.txt", 'a+')
-    f_debug.write("\n")
-
     image = cv2.imread(filename)
     run_fl, run_md, cur_togg = case_switch_mode()
     ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y = midpoint_cal(run_fl, run_md, cur_togg)
     r_case = run_case(run_fl, run_md, cur_togg)
     slot_fileflag, slot_coord = info_open_slot(park_lot_name)
-    ### Debug code:
+    ### Debug:
     print("Working case:", r_case)
     # print(ref_x)
     # print(ref_y)
@@ -489,17 +493,16 @@ def main(park_lot_name, trans_rot_mode, filename, cur_1, cur_2, cur_3, cur_4):
     # Zoom out image
     process_image = zoom_image(image)
     ### Both image translation and rotation calibration
-    # rot_image, rotAngle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-    # trans_image, transX, transY = translation(rot_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+    # rot_image, rot_angle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+    # trans_image, trans_x, trans_y = translation(rot_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
     ### In case of running image translation calibration only:
     if trans_rot_mode == 1:
-        trans_image, transX, transY = translation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-        rotAngle = 0
-        save_image(trans_image, r_case, transX, transY, rotAngle)
+        trans_image, trans_x, trans_y = translation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+        rot_angle = 0
+        save_image(trans_image, r_case, trans_x, trans_y, rot_angle)
     ### In case of running image rotation calibration only:
     if trans_rot_mode == 2:
-        transX = 0
-        transY = 0
-        rot_image, rotAngle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
-        save_image(rot_image, r_case, transX, transY, rotAngle)
-
+        trans_x = 0
+        trans_y = 0
+        rot_image, rot_angle = rotation(process_image, r_case, ref_mid_x, ref_mid_y, cur_mid_x, cur_mid_y)
+        save_image(rot_image, r_case, trans_x, trans_y, rot_angle)
