@@ -1,10 +1,9 @@
+# Import required libraries
 import os
 import numpy as np
 import cv2
 import imutils
 import datetime
-
-# import math
 
 # Define my image calibration algorithm
 
