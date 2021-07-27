@@ -31,13 +31,6 @@ def angle(v1, v2):
     angle= np.arccos(dot_product) * 180 / 3.14
     return angle
 
-# def sort_contours(cnts):
-# 	boundingBoxes = [cv2.boundingRect(c) for c in cnts]
-# 	(cnts, boundingBoxes) = zip(*sorted(zip(cnts, boundingBoxes),
-# 		key=lambda b:b[1][1], reverse=False))
-# 	# return the list of sorted contours and bounding boxes
-# 	return (cnts, boundingBoxes)
-
 def landmark_recog(img):
 
     img_copy = img.copy()
