@@ -4,7 +4,7 @@ import cv2
 
 from numpy.lib.function_base import append
 from numpy.lib.type_check import imag
-# from scipy import ndimage
+
 
 # Initiate threshold values, for later image processing (contour recognition based on color)
 im_lower = np.array([20, 75, 75], dtype="uint8")
