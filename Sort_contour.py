@@ -5,7 +5,6 @@ import cv2
 from numpy.lib.function_base import append
 from numpy.lib.type_check import imag
 
-
 # Initiate threshold values, for later image processing (contour recognition based on color)
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
@@ -15,6 +14,7 @@ def Print(a):
     print(a)
     exit(0)
 
+#smaller image
 def resize_img(img):
     size = 1000
     dim = (size, int(1080 * size / 1920))
