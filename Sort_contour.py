@@ -108,7 +108,7 @@ def lm_3(image):
         #vector_lr: vector go through landmark 1 and landmark on the right
         vector_ll = [left[1][0] - left[0][0], left[1][1] - left[0][1]]
         vector_lr = [right[0][0] - left[0][0], right[0][1] - left[0][1]]
-        #vector between ll and lr ~ angle_3_1_4 or angle_3_1_2
+        #angle between ll and lr ~ angle_3_1_4 or angle_3_1_2
         if angle_3_1_4_ref - 10 < angle(vector_ll, vector_lr) < angle_3_1_4_ref + 10:
             cv2.putText(image, "#4", (int(right[0][0]), int(right[0][1])), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (255, 255, 255), 2)
         else:   #~angle_3_1_2
