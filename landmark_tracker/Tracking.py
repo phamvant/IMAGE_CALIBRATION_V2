@@ -15,12 +15,8 @@ def landmark_recog(img):
 	im_hsv = cv2.cvtColor(img_copy, cv2.COLOR_BGR2HSV)
 	im_mask = cv2.inRange(im_hsv, im_lower, im_upper)
 	im_mask = cv2.morphologyEx(im_mask, cv2.MORPH_OPEN, kernel)
-    # resize_img(im_mask)
-
-    # Finding contours available on image
 	cur_cnt, _ = cv2.findContours(im_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	return cur_cnt, im_mask
-
 
 # initialize our centroid tracker and frame dimensions
 ct = CentroidTracker.CentroidTracker()
