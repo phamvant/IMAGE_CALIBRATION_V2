@@ -2,7 +2,6 @@ from sys import path
 import numpy as np
 import cv2
 
-# Initiate threshold values, for later image processing (contour recognition based on color)
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
 kernel = np.ones((3, 3), np.uint8)
