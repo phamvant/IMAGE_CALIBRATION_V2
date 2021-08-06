@@ -40,7 +40,7 @@ def next(rects):
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 	b = datetime.datetime.now()
-	print((b - a))
+	print((b - a).total_seconds() * 1000)
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 
