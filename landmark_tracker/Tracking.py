@@ -4,6 +4,7 @@ import numpy as np
 import imutils
 import time
 import cv2
+import datetime
 
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
@@ -38,7 +39,8 @@ def next(rects):
 		cv2.putText(frame, text, (centroid[0] - 10, centroid[1] - 10),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
-	
+	b = datetime.datetime.now()
+	print((b - a))
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 
@@ -46,6 +48,7 @@ def next(rects):
 # loop over the frames from the video stream
 while True:
 	# read the next frame from the video stream and resize it
+	a = datetime.datetime.now()
 	frame = vs.read()
 	frame = imutils.resize(frame, width=500)
 
