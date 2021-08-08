@@ -3,14 +3,14 @@ from collections import OrderedDict
 import numpy as np
 
 class CentroidTracker():
-	def __init__(self, maxDisappeared = 10000):
+	def __init__(self, maxDisappeared = 50):
 		# initialize the next unique object ID along with two ordered
 		# dictionaries used to keep track of mapping a given object
 		# ID to its centroid and number of consecutive frames it has
 		# been marked as "disappeared", respectively
 		self.nextObjectID = 0
 		self.objects = OrderedDict()
-		self.disappeared = OrderedDict()
+		self.disappeared = OrderedDict() #disappeare time of an contour?
 
 		# store the number of maximum consecutive frames a given
 		# object is allowed to be marked as "disappeared" until we

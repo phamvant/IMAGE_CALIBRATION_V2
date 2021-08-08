@@ -11,7 +11,6 @@ im_upper = np.array([35, 255, 255], dtype="uint8")
 kernel = np.ones((3, 3), np.uint8)
 
 def landmark_recog(img):
-
 	img_copy = img.copy()
 	im_hsv = cv2.cvtColor(img_copy, cv2.COLOR_BGR2HSV)
 	im_mask = cv2.inRange(im_hsv, im_lower, im_upper)
@@ -25,10 +24,43 @@ ct = CentroidTracker.CentroidTracker()
 
 print("[INFO] starting video stream...")
 vs = VideoStream(src=0).start()
+# vs = cv2.VideoCapture("D:\\YOLO\\input\\vid2.mp4")
+# vs = cv2.VideoCapture("D:\\CodeGit\\IMAGE_CALIBRATION_V2\\landmark_tracker\\project.avi")
 time.sleep(2.0)
 
-def next(rects):
-	#CentroidTracker.py
+
+# loop over the frames from the video stream
+while True:
+	# read the next frame from the video stream and resize it
+	a = datetime.datetime.now()
+	frame = vs.read()
+	# frame = imutils.resize(frame, width=500)
+
+	# if the frame dimensions are None, grab them
+	if W is None or H is None:
+		(H, W) = frame.shape[:2]
+
+	cnts = landmark_recog(frame)[0]
+	#keep landmarks that contourArea > 150
+	area_sort = [x for x in cnts if cv2.contourArea(x) > 300]
+	# imgOrigin = frame.copy()
+	# img1 = frame.copy()
+
+	# # Vẽ toàn bộ contours trên hình ảnh gốc
+	# cv2.drawContours(frame, area_sort, -1, (0, 255, 0), 3)
+
+	# #bounding box info
+	rects = []
+
+	for i in range(len(area_sort)):
+		cnt = area_sort[i]
+		x,y,w,h = cv2.boundingRect(cnt)
+		box = np.array([x, y, x + w, y + h])
+		rects.append(box.astype("int"))
+		# frame = cv2.rectangle(frame,(x,y),(x+w,y+h),(0,255,0),2)
+
+	print(rects)
+	
 	objects = ct.update(rects)
 
 	# loop over the tracked objects
@@ -41,35 +73,12 @@ def next(rects):
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 	b = datetime.datetime.now()
 	print((b - a).total_seconds() * 1000)
-	cv2.imshow("Frame", frame)
+	cv2.imshow("Frame", imutils.resize(frame, width = 700))
 	key = cv2.waitKey(1) & 0xFF
-
-
-# loop over the frames from the video stream
-while True:
-	# read the next frame from the video stream and resize it
-	a = datetime.datetime.now()
-	frame = vs.read()
-	frame = imutils.resize(frame, width=500)
-
-	# if the frame dimensions are None, grab them
-	if W is None or H is None:
-		(H, W) = frame.shape[:2]
-
-	cnts = landmark_recog(frame)[0]
-	area_cnt = [cv2.contourArea(cnt) for cnt in cnts]
-	#keep landmarks that contourArea > 150
-	b = [x for x in area_cnt if x > 150]
-	area_sort = np.argsort(b)
-
-	#bounding box info
-	rects = []
-	for i in range(len(area_sort)):
-		print(len(area_sort))
-		cnt = cnts[area_sort[i]]
-		x,y,w,h = cv2.boundingRect(cnt)
-		box = np.array([x, y, x + w, y + h])
-		rects.append(box.astype("int"))
-
 	#rects = 4 corner of bounding box (all bounding box)
-	next(rects)
+	if key == ord("q"):
+		break
+
+# do a bit of cleanup
+cv2.destroyAllWindows()
+vs.stop()
