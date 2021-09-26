@@ -9,7 +9,7 @@ import time
 import cv2
 import datetime
 import math
-
+import os
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
 kernel = np.ones((3, 3), np.uint8)
@@ -136,7 +136,12 @@ def find_4(cur_cnts, objects, dis_index):
 			return False
 
 #vs = cv2.VideoCapture("D:\\CodeGit\\IMAGE_CALIBRATION_V2\\landmark_tracker\\vid.mp4")
-vs = cv2.VideoCapture("./landmark_tracker/vid.mp4")
+
+if os.name == 'nt':
+	vs = cv2.VideoCapture(".\\landmark_tracker\\vid.mp4")
+else:
+	vs = cv2.VideoCapture("./landmark_tracker/vid.mp4")
+	
 time.sleep(2.0)
 cou = 0
 count = True
