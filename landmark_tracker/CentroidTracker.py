@@ -14,7 +14,7 @@ disappeared = OrderedDict() #disappeare time of an contour?
 # store the number of maximum consecutive frames a given
 # object is allowed to be marked as "disappeared" until we
 # need to deregister the object from tracking
-maxDisappeared = 10
+maxDisappeared = 3
 
 def register(centroid):
     # when registering an object we use the next available object

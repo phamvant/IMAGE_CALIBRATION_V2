@@ -1,3 +1,4 @@
+from os import X_OK
 from textwrap import indent
 from numpy.core.numeric import base_repr
 from scipy.spatial import distance
@@ -32,7 +33,7 @@ def angle_dect(v1, v2):
     return angle
     
 
-Pos_def = np.array([[440, 277],[153, 264],[415, 194],[209, 188]])
+Pos_def = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
 A = Pos_def[0]
 B = Pos_def[1]
 C = Pos_def[2]
@@ -52,6 +53,7 @@ def noisuy(cur_1, cur_2, coord_1, coord_2):
 		vector_def = vectors[cur_2, cur_1]
 		cur_1, cur_2 = cur_2, cur_1
 		coord_1, coord_2 = coord_2, coord_1
+	#print("XXXX-{}-{}".format(cur_1, cur_2))
 	vector_new = coord_2 - coord_1
 	move = coord_1 - Pos_def[cur_1]
 	angle = angle_dect(vector_new, vector_def)
@@ -76,46 +78,77 @@ def landmark_recog(img):
 #get final result
 def Position(objects):
 	Pos = []
-	for(x, centroid) in objects.items():
-		if x in base_cnts:
-			Pos.insert(base_cnts.index(x), centroid)
+	if len(base_cnts) == 4:
+		for i in range(4):
+			Pos.append(np.array([0,0]))
+		for(x, centroid) in objects.items():
+			if x in base_cnts:
+				Pos.insert(base_cnts.index(x), centroid)
+				Pos.pop(base_cnts.index(x) + 1)
+	else:
+		for(x, centroid) in objects.items():
+			if x in base_cnts:
+				Pos.insert(base_cnts.index(x), centroid)
 	return Pos
 
 #check if showed up contour is landmark
-# def find_4(cur_cnts, objects):
-# 	#angle relationship of defined landmarks
-# 	angle_1_3_2_ref = 124
-# 	angle_1_3_0_ref = 105
-# 	angle_0_2_1_ref = 91
-# 	angle_0_2_3_ref = 72
-# 	Pos = []
-# 	#"objects" store all tracked contour (also in the past) by ID (0 -> 1 -> 2 -> ... -> 99999)
-# 	#store position of 4 contours in Pos[lm0, lm1, lm2, lm3]
-# 	#check angle relationship
-# 	for (x, centroid) in objects.items():
-# 		if x in cur_cnts:
-# 			Pos.insert(cur_cnts.index(x), centroid)
-# 	vector_0_2 = [Pos[0][0] - Pos[2][0], Pos[0][1] - Pos[2][1]]
-# 	vector_1_2 = [Pos[1][0] - Pos[2][0], Pos[1][1] - Pos[2][1]]
-# 	angle = angle_dect(vector_0_2, vector_1_2)
-# 	if angle_0_2_1_ref - 10 < angle < angle_0_2_1_ref + 10:
-# 		global base_cnts
-# 		base_cnts = cur_cnts.copy()
-# 		return True
-# 	else:
-# 		return False
+def find_4(cur_cnts, objects, dis_index):
+	#angle relationship of defined landmarks
+	angle_1_3_2_ref = 124
+	angle_1_3_0_ref = 105
+	angle_0_2_1_ref = 91
+	angle_0_2_3_ref = 72
+	Pos = []
+	#"objects" store all tracked contour (also in the past) by ID (0 -> 1 -> 2 -> ... -> 99999)
+	#store position of 4 contours in Pos[lm0, lm1, lm2, lm3]
+	#check angle relationship
+	for i in range(4):
+		Pos.append(np.array([0,0]))
+	for (x, centroid) in objects.items():
+		if x in cur_cnts:
+			Pos.insert(cur_cnts.index(x), centroid)
+			Pos.pop(cur_cnts.index(x) + 1)
+	A1 = Pos[0]
+	B1 = Pos[1]
+	C1 = Pos[2]
+	D1 = Pos[3]
+	#print(Pos)
+	#print(cur_cnts)
+	if dis_index == 0 or dis_index == 1 or dis_index == 2:
+		vector_1 = A1 - C1
+		vector_2 = B1 - C1
+		angle = angle_dect(vector_1, vector_2) * 180 / math.pi
+		#print(angle)
+		if angle_0_2_1_ref - 10 < angle < angle_0_2_1_ref + 10:
+			global base_cnts
+			base_cnts = cur_cnts.copy()
+			return True
+		else:
+			return False
+	else:
+		vector_1 = A1 - D1
+		vector_2 = C1 - D1
+		angle = angle_dect(vector_1, vector_2)
+		if angle_0_2_3_ref - 10 < angle < angle_0_2_3_ref + 10:
+			base_cnts = cur_cnts.copy()
+			return True
+		else:
+			return False
 
 #vs = cv2.VideoCapture("D:\\CodeGit\\IMAGE_CALIBRATION_V2\\landmark_tracker\\vid.mp4")
 vs = cv2.VideoCapture("./landmark_tracker/vid.mp4")
 time.sleep(2.0)
-
+cou = 0
 count = True
 # loop over the frames from the video stream
 while True:
+	cou+=1
+	if cou == 550:
+		exit()
 	# read the next frame from the video stream and resize it
 	a = datetime.datetime.now()
 	frame = vs.read()[1]
-	frame = imutils.resize(frame, width=700)
+	frame = imutils.resize(frame, width=1000)
 
 	# if the frame dimensions are None, grab them
 	if W is None or H is None:
@@ -123,7 +156,7 @@ while True:
 
 	cnts = landmark_recog(frame)[0]
 	#keep landmarks that have fixed area
-	area_sort = [x for x in cnts if (20 < cv2.contourArea(x) < 45)]
+	area_sort = [x for x in cnts if (50 < cv2.contourArea(x) < 100)]
 
 	rects = []
 
@@ -135,12 +168,10 @@ while True:
 		rects.append(box.astype("int"))
 
 	if (count):
-		rects = [np.array([435, 274, 445, 281]), np.array([149, 261, 157, 267]),\
-			np.array([411, 192, 419, 196]), np.array([205, 186, 214, 190])]
+		rects = [np.array([621, 392, 635, 401]), np.array([212, 373, 225, 382]), np.array([587, 273, 601, 281]), np.array([293, 264, 306, 272])]
 		base_cnts = [0, 1, 2, 3]
-		Pos = [np.array([440, 277]), np.array([153, 264]), np.array([415, 194]), np.array([209, 188])]
+		Pos = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
 		count = False
-
 	#tracking contour
 	#view Readme.txt to see how this func work
 	#"objects = [[ID, Position], [ID, Position],...]"
@@ -160,6 +191,7 @@ while True:
 			cur_cnts = []
 			for (x, _ ) in objects.items():
 				cur_cnts.append(x)
+			#print(cur_cnts)
 			dis = (list(set(base_cnts) - set(cur_cnts)))[0]
 			#remember position of missing landmark
 			dis_index = base_cnts.index(dis)
@@ -179,39 +211,46 @@ while True:
 			base_cnts.remove(dis) #remove value	#index
 			base_cnts.remove(dis_2) #remove value
 			Pos = Position(objects)
-		Pos = Position(objects)
+		else:
+			Pos = Position(objects)
 	#if we tracking 3 contours
 	elif len(base_cnts) == 3:
 		#new contour show up
-		# if len(objects) == 4:
-		# 	cur_cnts = base_cnts.copy()
-		# 	for (x, _ ) in objects.items():
-		# 		#cur_cnts: make a copy of base_cnts
-		# 		#put new contour in missing landmark's position
-		# 		#to check if that's new landmark
-		# 		if x in cur_cnts:
-		# 			continue
-		# 		else:
-		# 			cur_cnts.insert(dis_index, x)
-		# 			if (find_4(cur_cnts, objects)):
-		# 				Pos = Position(objects)
-		if len(objects) == 2:
+		if len(objects) == 4:
+			cur_cnts = base_cnts.copy()
+			for (x, _ ) in objects.items():
+				#cur_cnts: make a copy of base_cnts
+				#put new contour in missing landmark's position
+				#to check if that's new landmark
+				if x in cur_cnts:
+					continue
+				else:
+					#print(dis_index) 
+					cur_cnts.insert(dis_index, x)
+					#print(cur_cnts)
+					if (find_4(cur_cnts, objects, dis_index)):
+						Pos = Position(objects)
+						print("OKOK")
+		elif len(objects) == 2:
 			cur_cnts = []
 			for (x, _ ) in objects.items():
 				cur_cnts.append(x)
 			dis = (list(set(base_cnts) - set(cur_cnts)))[0] #value
-			dis_index_2 = base_cnts.index(dis)	#index
+			base_cnts.insert(dis_index, 0)
+			dis_index_2 = base_cnts.index(dis)#index
+			base_cnts.pop(dis_index)
 			base_cnts.remove(dis) #remove value
 			Pos = Position(objects)
-		Pos = Position(objects)
+		else:
+			Pos = Position(objects)
 	#print(len(base_cnts))
-	# print(len(objects))
+	#print(len(objects), len(base_cnts))
 	# try:
 	# 	print(dis_index, dis_index_2)
 	# except:
 	# 	None
 	# print(base_cnts)
-	if len(base_cnts) == 2:
+	elif len(base_cnts) == 2:
 		temp = []
 		temp_2 = []
 		#print(Pos)
@@ -220,13 +259,16 @@ while True:
 		for i in range(4):
 			if (i != dis_index and i != dis_index_2):
 				temp.append(i)
-		# print(temp)
-		# print(base_cnts)
-		for x in base_cnts:
-			for (k, centroid) in objects.items():
+		for (k, centroid) in objects.items():
+			for x in base_cnts:
 				if k == x:
 					temp_2.append(centroid)
-		noisuy_coord = noisuy(temp[0], temp[1], temp_2[0], temp_2[1])
+		try:
+			noisuy_coord = noisuy(temp[0], temp[1], temp_2[0], temp_2[1])
+		except:
+			print(dis_index, dis_index_2)
+			print(temp, temp_2)
+			exit()
 		if len(objects) > 2:
 			cur_cnts = base_cnts.copy()
 			for(x, centroid) in objects.items():
@@ -235,12 +277,16 @@ while True:
 				else:
 					for i in range(4):
 						try:
-							if (noisuy_coord[i][0] - 20 < centroid[0] < noisuy_coord[i][0] + 20)\
-								 and (noisuy_coord[i][1] - 20 < centroid[1] < noisuy_coord[i][1] + 20):
-								base_cnts.insert(i, x)
-								print(i)
+							cv2.circle(frame, (noisuy_coord[i][0], noisuy_coord[i][1]), 4, (0, 255, 0), -1)
+							if (noisuy_coord[i][0] - 70 < centroid[0] < noisuy_coord[i][0] + 70)\
+								 and (noisuy_coord[i][1] - 70 < centroid[1] < noisuy_coord[i][1] + 70):
+								print("KKKKKKKKKKKKKKKKKKKK")
+								if len(objects) == 3 and i == 2:
+									base_cnts.insert(i - 1, x)
+								else:
+									base_cnts.insert(i, x)
 								if i == dis_index:
-									print("OK")
+									
 									dis_index_2, dis_index = dis_index, dis_index_2
 						except:
 							None
@@ -254,6 +300,8 @@ while True:
 				except:
 					None
 	#print(Pos)
+	if len(Pos) == 2:
+		Pos.insert(dis_index_2, [0,0])
 	if len(Pos) == 3:
 		Pos.insert(dis_index,[0,0])
 	text = 0
@@ -265,13 +313,23 @@ while True:
 		text += 1
 	# b = datetime.datetime.now()
 	# print((b - a) * 1000)
-	#print(Pos)
+	for (x, _) in objects.items():
+		print(x)
+	print('len:{}'.format(len(objects)))
+	# try:
+	# 	print(dis_index)
+	# except:
+	# 	None
+	print(Pos)
+	print('base{}'.format(base_cnts))
+	print('\n')
 	cv2.imshow("Frame", frame)
-	key = cv2.waitKey() & 0xFF
+	key = cv2.waitKey(1) & 0xFF
 	if key == ord("q"):
 		break
 
 	rects = []
+
 
 # do a bit of cleanup
 cv2.destroyAllWindows()
