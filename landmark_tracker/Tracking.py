@@ -1,19 +1,20 @@
 from os import X_OK
 from textwrap import indent
 from numpy.core.numeric import base_repr
+from numpy.lib.function_base import average
 from scipy.spatial import distance
 import CentroidTracker as ct
 import numpy as np
 import imutils
 import time
 import cv2
-import datetime
+from datetime import date, timedelta
 import math
 import os
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
 kernel = np.ones((3, 3), np.uint8)
-
+f= open("coord.txt","w+")
 vectors = {}
 
 def xoay(p1, p2, angle):
@@ -135,23 +136,28 @@ def find_4(cur_cnts, objects, dis_index):
 		else:
 			return False
 
-#vs = cv2.VideoCapture("D:\\CodeGit\\IMAGE_CALIBRATION_V2\\landmark_tracker\\vid.mp4")
-
 if os.name == 'nt':
 	vs = cv2.VideoCapture(".\\landmark_tracker\\vid.mp4")
 else:
 	vs = cv2.VideoCapture("./landmark_tracker/vid.mp4")
-	
+
 time.sleep(2.0)
 cou = 0
 count = True
+average_time = 0
 # loop over the frames from the video stream
 while True:
+	start = time.monotonic()
 	cou+=1
-	if cou == 550:
+	# if average_time > 100:
+	# 	print(cou)
+	# 	exit()
+	if cou == 570:
+		#print(average_time)
+		f.write("\n\naverage_time: {}".format(average_time / 570))
+		f.close()
 		exit()
 	# read the next frame from the video stream and resize it
-	a = datetime.datetime.now()
 	frame = vs.read()[1]
 	frame = imutils.resize(frame, width=1000)
 
@@ -235,7 +241,7 @@ while True:
 					#print(cur_cnts)
 					if (find_4(cur_cnts, objects, dis_index)):
 						Pos = Position(objects)
-						print("OKOK")
+						#print("OKOK")
 		elif len(objects) == 2:
 			cur_cnts = []
 			for (x, _ ) in objects.items():
@@ -271,8 +277,8 @@ while True:
 		try:
 			noisuy_coord = noisuy(temp[0], temp[1], temp_2[0], temp_2[1])
 		except:
-			print(dis_index, dis_index_2)
-			print(temp, temp_2)
+			# print(dis_index, dis_index_2)
+			# print(temp, temp_2)
 			exit()
 		if len(objects) > 2:
 			cur_cnts = base_cnts.copy()
@@ -285,13 +291,16 @@ while True:
 							cv2.circle(frame, (noisuy_coord[i][0], noisuy_coord[i][1]), 4, (0, 255, 0), -1)
 							if (noisuy_coord[i][0] - 70 < centroid[0] < noisuy_coord[i][0] + 70)\
 								 and (noisuy_coord[i][1] - 70 < centroid[1] < noisuy_coord[i][1] + 70):
-								print("KKKKKKKKKKKKKKKKKKKK")
+								#print("KKKKKKKKKKKKKKKKKKKK")
+								f.write("------------------------\n")
+								f.write("predict: {}: {}\n".format(i, noisuy_coord[i]))
+								f.write("new_landmark: {}\n".format(centroid))
+								f.write("------------------------\n")
 								if len(objects) == 3 and i == 2:
 									base_cnts.insert(i - 1, x)
 								else:
 									base_cnts.insert(i, x)
 								if i == dis_index:
-									
 									dis_index_2, dis_index = dis_index, dis_index_2
 						except:
 							None
@@ -318,23 +327,30 @@ while True:
 		text += 1
 	# b = datetime.datetime.now()
 	# print((b - a) * 1000)
-	for (x, _) in objects.items():
-		print(x)
-	print('len:{}'.format(len(objects)))
+	# for (x, _) in objects.items():
+	# 	print(x)
+	# print('len:{}'.format(len(objects)))
 	# try:
 	# 	print(dis_index)
 	# except:
 	# 	None
-	print(Pos)
-	print('base{}'.format(base_cnts))
-	print('\n')
+	# print(Pos)
+	# print('base{}'.format(base_cnts))
+	# print('\n')
 	cv2.imshow("Frame", frame)
-	key = cv2.waitKey(1) & 0xFF
+	key = cv2.waitKey() & 0xFF
 	if key == ord("q"):
 		break
+	
+	for i in range(4):
+		f.write("{} : {}\n".format(i, Pos[i]))
+	if len(base_cnts) == 2:
+		f.write("*************************\n")
+		f.write("predict landmark: {} {}\n".format(dis_index, dis_index_2))
+	f.write("time: {}\n\n\n".format(time.monotonic() - start))
+	average_time += time.monotonic() - start
 
-	rects = []
-
+	# exit()
 
 # do a bit of cleanup
 cv2.destroyAllWindows()
