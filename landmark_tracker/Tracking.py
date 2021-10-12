@@ -1,8 +1,3 @@
-from os import X_OK
-from textwrap import indent
-from numpy.core.numeric import base_repr
-from numpy.lib.function_base import average
-from scipy.spatial import distance
 import CentroidTracker as ct
 import numpy as np
 import imutils
@@ -17,6 +12,7 @@ kernel = np.ones((3, 3), np.uint8)
 f= open("coord.txt","w+")
 vectors = {}
 
+#return new possition of landmark after rotate
 def xoay(p1, p2, angle):
       v = [p2[0] - p1[0], p2[1] - p1[1]]
 
@@ -26,6 +22,7 @@ def xoay(p1, p2, angle):
       p3 = [int(p1[0] + newX), int(p1[1] + newY)]
       return p3
 
+#detect angle between 2 vectors
 def angle_dect(v1, v2):
     unit_vector_1 = v1 / np.linalg.norm(v1)
     unit_vector_2 = v2 / np.linalg.norm(v2)
@@ -33,13 +30,14 @@ def angle_dect(v1, v2):
     angle= np.arccos(dot_product)
     return angle
     
-
+#define default possition bottom -> top / right -> left
 Pos_def = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
 A = Pos_def[0]
 B = Pos_def[1]
 C = Pos_def[2]
 D = Pos_def[3]
 
+#vectors from default landmarks
 vectors[1,0] = A - B
 vectors[1,3] = D - B
 vectors[3,2] = C - D
@@ -47,18 +45,20 @@ vectors[0,2] = C - A
 vectors[1,2] = C - B
 vectors[3,0] = A - D
 
-def noisuy(cur_1, cur_2, coord_1, coord_2):
-	try:
+#predict lost landmarks (2 landmark)
+def noisuy(cur_1, cur_2, coord_1, coord_2): #name of nokotteru landmark and their positions
+	try:	#figure out what vector are they (depend on defined landmark above)
 		vector_def = vectors[cur_1, cur_2]
 	except:
 		vector_def = vectors[cur_2, cur_1]
 		cur_1, cur_2 = cur_2, cur_1
 		coord_1, coord_2 = coord_2, coord_1
-	#print("XXXX-{}-{}".format(cur_1, cur_2))
-	vector_new = coord_2 - coord_1
-	move = coord_1 - Pos_def[cur_1]
-	angle = angle_dect(vector_new, vector_def)
+
+	vector_new = coord_2 - coord_1		#nokotteru vector
+	move = coord_1 - Pos_def[cur_1]		#figure out how nokotteru vector moved
+	angle = angle_dect(vector_new, vector_def)	
 	noisuy_coord = {}
+	#move all default vectors same way
 	for i in range(4):
 		if i != cur_1 and i != cur_2:
 			temp_move = Pos_def[i] + move
@@ -95,8 +95,8 @@ def Position(objects):
 #check if showed up contour is landmark
 def find_4(cur_cnts, objects, dis_index):
 	#angle relationship of defined landmarks
-	angle_1_3_2_ref = 124
-	angle_1_3_0_ref = 105
+	# angle_1_3_2_ref = 124
+	# angle_1_3_0_ref = 105
 	angle_0_2_1_ref = 91
 	angle_0_2_3_ref = 72
 	Pos = []
@@ -113,8 +113,7 @@ def find_4(cur_cnts, objects, dis_index):
 	B1 = Pos[1]
 	C1 = Pos[2]
 	D1 = Pos[3]
-	#print(Pos)
-	#print(cur_cnts)
+
 	if dis_index == 0 or dis_index == 1 or dis_index == 2:
 		vector_1 = A1 - C1
 		vector_2 = B1 - C1
@@ -139,7 +138,8 @@ def find_4(cur_cnts, objects, dis_index):
 if os.name == 'nt':
 	vs = cv2.VideoCapture(".\\landmark_tracker\\vid.mp4")
 else:
-	vs = cv2.VideoCapture("./landmark_tracker/vid.mp4")
+	vs = cv2.VideoCapture("/home/thuan/Code/IMAGE_CALIBRATION_V2/landmark_tracker/vid.mp4")
+
 
 time.sleep(2.0)
 cou = 0
@@ -211,16 +211,17 @@ while True:
 		#Pos: return position of landmarks that we use to calibrate images (final result)
 			Pos = Position(objects)
 		elif len(objects) == 2:
+			#same way as 1 (add dis_index_2)
 			cur_cnts = []
 			for (x, _ ) in objects.items():
 				cur_cnts.append(x)
 			kk = list(set(base_cnts) - set(cur_cnts))
-			dis = kk[0] #value
-			dis_index = base_cnts.index(dis)	#index
-			dis_2 = kk[1] #value
+			dis = kk[0]
+			dis_index = base_cnts.index(dis)
+			dis_2 = kk[1]
 			dis_index_2 = base_cnts.index(dis_2)
-			base_cnts.remove(dis) #remove value	#index
-			base_cnts.remove(dis_2) #remove value
+			base_cnts.remove(dis)
+			base_cnts.remove(dis_2)
 			Pos = Position(objects)
 		else:
 			Pos = Position(objects)
@@ -236,62 +237,55 @@ while True:
 				if x in cur_cnts:
 					continue
 				else:
-					#print(dis_index) 
 					cur_cnts.insert(dis_index, x)
-					#print(cur_cnts)
 					if (find_4(cur_cnts, objects, dis_index)):
 						Pos = Position(objects)
-						#print("OKOK")
+		#one more disappear
 		elif len(objects) == 2:
 			cur_cnts = []
 			for (x, _ ) in objects.items():
 				cur_cnts.append(x)
-			dis = (list(set(base_cnts) - set(cur_cnts)))[0] #value
+			dis = (list(set(base_cnts) - set(cur_cnts)))[0]
 			base_cnts.insert(dis_index, 0)
-			dis_index_2 = base_cnts.index(dis)#index
+			dis_index_2 = base_cnts.index(dis)
 			base_cnts.pop(dis_index)
-			base_cnts.remove(dis) #remove value
+			base_cnts.remove(dis)
 			Pos = Position(objects)
 		else:
 			Pos = Position(objects)
-	#print(len(base_cnts))
-	#print(len(objects), len(base_cnts))
-	# try:
-	# 	print(dis_index, dis_index_2)
-	# except:
-	# 	None
-	# print(base_cnts)
+	#if current tracking 2 landmarks
 	elif len(base_cnts) == 2:
-		temp = []
-		temp_2 = []
-		#print(Pos)
-		#print(dis_index, dis_index_2)
+		temp = []	#nokotteru landmarks
+		temp_2 = []	#possition of nokotteru landmarks
+
 		Pos = Position(objects)
 		for i in range(4):
 			if (i != dis_index and i != dis_index_2):
 				temp.append(i)
+
 		for (k, centroid) in objects.items():
 			for x in base_cnts:
 				if k == x:
 					temp_2.append(centroid)
+		#predict missing landmarks
 		try:
 			noisuy_coord = noisuy(temp[0], temp[1], temp_2[0], temp_2[1])
 		except:
-			# print(dis_index, dis_index_2)
-			# print(temp, temp_2)
 			exit()
+		#if detect new objects
 		if len(objects) > 2:
 			cur_cnts = base_cnts.copy()
 			for(x, centroid) in objects.items():
 				if x in cur_cnts:
 					continue
 				else:
+					#check if new objects are landmark
 					for i in range(4):
 						try:
 							cv2.circle(frame, (noisuy_coord[i][0], noisuy_coord[i][1]), 4, (0, 255, 0), -1)
 							if (noisuy_coord[i][0] - 70 < centroid[0] < noisuy_coord[i][0] + 70)\
 								 and (noisuy_coord[i][1] - 70 < centroid[1] < noisuy_coord[i][1] + 70):
-								#print("KKKKKKKKKKKKKKKKKKKK")
+								#if new object is close to predicted landmarks
 								f.write("------------------------\n")
 								f.write("predict: {}: {}\n".format(i, noisuy_coord[i]))
 								f.write("new_landmark: {}\n".format(centroid))
@@ -304,39 +298,32 @@ while True:
 									dis_index_2, dis_index = dis_index, dis_index_2
 						except:
 							None
+			#update current tracking landmark possition
 			Pos = Position(objects)
 			if len(Pos) == 3:
 				Pos.insert(dis_index, [0,0])
+			#insert [0,0] as missing landmarks but we won't use it
 		else:
 			for i in range(4):
+				#if no landmark show up (still have only 2 nokotteru landmakrs)
 				try:
+					#put predicted landmarks position (use it)
 					Pos.insert(i, noisuy_coord[i])
 				except:
 					None
-	#print(Pos)
+	#insert [0,0] as missing landmarks
 	if len(Pos) == 2:
 		Pos.insert(dis_index_2, [0,0])
 	if len(Pos) == 3:
 		Pos.insert(dis_index,[0,0])
 	text = 0
+	#draw and make write data
 	for centroid in Pos:
 		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 		cv2.putText(frame, str(text), (centroid[0] - 10, centroid[1] - 10),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-		#print(centroid[0], centroid[1], text)
 		text += 1
-	# b = datetime.datetime.now()
-	# print((b - a) * 1000)
-	# for (x, _) in objects.items():
-	# 	print(x)
-	# print('len:{}'.format(len(objects)))
-	# try:
-	# 	print(dis_index)
-	# except:
-	# 	None
-	# print(Pos)
-	# print('base{}'.format(base_cnts))
-	# print('\n')
+
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey() & 0xFF
 	if key == ord("q"):
