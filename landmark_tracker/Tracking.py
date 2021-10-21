@@ -6,12 +6,16 @@ import cv2
 from datetime import date, timedelta
 import math
 import os
+import glob
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
+im_lower_g = np.array([40, 254,40], dtype="uint8")
+im_upper_g = np.array([100, 255, 255], dtype="uint8")
 kernel = np.ones((3, 3), np.uint8)
 f= open("coord.txt","w+")
 vectors = {}
 
+#comment
 #return new possition of landmark after rotate
 def xoay(p1, p2, angle):
       v = [p2[0] - p1[0], p2[1] - p1[1]]
@@ -70,6 +74,14 @@ def landmark_recog(img):
 	img_copy = img.copy()
 	im_hsv = cv2.cvtColor(img_copy, cv2.COLOR_BGR2HSV)
 	im_mask = cv2.inRange(im_hsv, im_lower, im_upper)
+	im_mask = cv2.morphologyEx(im_mask, cv2.MORPH_OPEN, kernel)
+	cur_cnt, _ = cv2.findContours(im_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+	return cur_cnt, im_mask
+
+def landmark_recog2(img):
+	img_copy = img.copy()
+	im_hsv = cv2.cvtColor(img_copy, cv2.COLOR_BGR2HSV)
+	im_mask = cv2.inRange(im_hsv, im_lower_g, im_upper_g)
 	im_mask = cv2.morphologyEx(im_mask, cv2.MORPH_OPEN, kernel)
 	cur_cnt, _ = cv2.findContours(im_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 	return cur_cnt, im_mask
@@ -282,7 +294,7 @@ while True:
 					#check if new objects are landmark
 					for i in range(4):
 						try:
-							cv2.circle(frame, (noisuy_coord[i][0], noisuy_coord[i][1]), 4, (0, 255, 0), -1)
+							cv2.circle(frame, (noisuy_coord[i][0], noisuy_coord[i][1]), 4, (1, 255, 1), -1)
 							if (noisuy_coord[i][0] - 70 < centroid[0] < noisuy_coord[i][0] + 70)\
 								 and (noisuy_coord[i][1] - 70 < centroid[1] < noisuy_coord[i][1] + 70):
 								#if new object is close to predicted landmarks
@@ -319,16 +331,17 @@ while True:
 	text = 0
 	#draw and make write data
 	for centroid in Pos:
-		cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
+		cv2.circle(frame, (centroid[0], centroid[1]), 4, (1, 255, 1), -1)
 		cv2.putText(frame, str(text), (centroid[0] - 10, centroid[1] - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (1, 255, 1), 2)
 		text += 1
 
 	cv2.imshow("Frame", frame)
-	key = cv2.waitKey() & 0xFF
+	key = cv2.waitKey(10) & 0xFF
 	if key == ord("q"):
 		break
 	
+
 	for i in range(4):
 		f.write("{} : {}\n".format(i, Pos[i]))
 	if len(base_cnts) == 2:
@@ -336,7 +349,6 @@ while True:
 		f.write("predict landmark: {} {}\n".format(dis_index, dis_index_2))
 	f.write("time: {}\n\n\n".format(time.monotonic() - start))
 	average_time += time.monotonic() - start
-
 	# exit()
 
 # do a bit of cleanup
