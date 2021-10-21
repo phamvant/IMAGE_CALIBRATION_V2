@@ -15,7 +15,7 @@ kernel = np.ones((3, 3), np.uint8)
 f= open("coord.txt","w+")
 vectors = {}
 
-#comment
+
 #return new possition of landmark after rotate
 def xoay(p1, p2, angle):
       v = [p2[0] - p1[0], p2[1] - p1[1]]
@@ -351,6 +351,7 @@ while True:
 	average_time += time.monotonic() - start
 	# exit()
 
+#add new comments
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()
