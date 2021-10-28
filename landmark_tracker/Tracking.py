@@ -3,10 +3,8 @@ import numpy as np
 import imutils
 import time
 import cv2
-from datetime import date, timedelta
 import math
 import os
-import glob
 im_lower = np.array([20, 75, 75], dtype="uint8")
 im_upper = np.array([35, 255, 255], dtype="uint8")
 im_lower_g = np.array([40, 254,40], dtype="uint8")
@@ -35,7 +33,8 @@ def angle_dect(v1, v2):
     return angle
     
 #define default possition bottom -> top / right -> left
-Pos_def = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
+#Pos_def = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
+Pos_def = np.array([[686, 434], [332, 432], [658, 250], [339, 255]])
 A = Pos_def[0]
 B = Pos_def[1]
 C = Pos_def[2]
@@ -109,8 +108,9 @@ def find_4(cur_cnts, objects, dis_index):
 	#angle relationship of defined landmarks
 	# angle_1_3_2_ref = 124
 	# angle_1_3_0_ref = 105
-	angle_0_2_1_ref = 91
-	angle_0_2_3_ref = 72
+	angle_0_2_1_ref = angle_dect(vectors[0, 2], vectors[1, 2])
+	angle_0_2_3_ref = angle_dect(vectors[0, 2], vectors[3, 2])
+
 	Pos = []
 	#"objects" store all tracked contour (also in the past) by ID (0 -> 1 -> 2 -> ... -> 99999)
 	#store position of 4 contours in Pos[lm0, lm1, lm2, lm3]
@@ -150,10 +150,11 @@ def find_4(cur_cnts, objects, dis_index):
 if os.name == 'nt':
 	vs = cv2.VideoCapture(".\\landmark_tracker\\vid.mp4")
 else:
-	vs = cv2.VideoCapture("/home/thuan/Code/IMAGE_CALIBRATION_V2/landmark_tracker/vid.mp4")
+	#vs = cv2.VideoCapture("/home/thuan/LAB/IMAGE_CALIBRATION_V2/landmark_tracker/vid.mp4")
+	vs = vs = cv2.VideoCapture("/home/thuan/LAB/IMAGE_CALIBRATION_V2/landmark_tracker/project.avi")
 
 
-time.sleep(2.0)
+#time.sleep(2.0)
 cou = 0
 count = True
 average_time = 0
@@ -179,7 +180,7 @@ while True:
 
 	cnts = landmark_recog(frame)[0]
 	#keep landmarks that have fixed area
-	area_sort = [x for x in cnts if (50 < cv2.contourArea(x) < 100)]
+	area_sort = [x for x in cnts if (100 < cv2.contourArea(x) < 500)]
 
 	rects = []
 
@@ -191,9 +192,11 @@ while True:
 		rects.append(box.astype("int"))
 
 	if (count):
-		rects = [np.array([621, 392, 635, 401]), np.array([212, 373, 225, 382]), np.array([587, 273, 601, 281]), np.array([293, 264, 306, 272])]
+		#rects = [np.array([621, 392, 635, 401]), np.array([212, 373, 225, 382]), np.array([587, 273, 601, 281]), np.array([293, 264, 306, 272])]
+		rects = [np.array([675, 425, 699, 446]), np.array([322, 425, 345, 442]), np.array([650, 243, 669, 258]), np.array([330, 254, 349, 267])]
 		base_cnts = [0, 1, 2, 3]
-		Pos = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
+		#Pos = np.array([[628, 396],[218, 377],[594, 277],[299, 268]])
+		Pos = np.array([[686, 434], [332, 432], [658, 250], [339, 255]])
 		count = False
 	#tracking contour
 	#view Readme.txt to see how this func work
@@ -337,7 +340,7 @@ while True:
 		text += 1
 
 	cv2.imshow("Frame", frame)
-	key = cv2.waitKey(10) & 0xFF
+	key = cv2.waitKey() & 0xFF
 	if key == ord("q"):
 		break
 	
